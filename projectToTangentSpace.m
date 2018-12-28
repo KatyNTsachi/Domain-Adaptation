@@ -1,4 +1,4 @@
-function [ret_p] = projectToTangentSpace(p)
+function [ret_p] = projectToTangentSpace(p,s)
 
 
 end

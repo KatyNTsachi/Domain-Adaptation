@@ -1,4 +1,3 @@
-function [ret_p] = projectToRiemannianSpace(p)
-
-
+function [ret_p] = projectToRiemannianSpace(p,s)
+    
 end
