@@ -1,4 +1,4 @@
-function [covEvents] = cov_from_cellarray_of_events(Events)
+function [covEvents] = covFromCellArrayOfEvents(Events)
 %COV Scalculates the covariances of a matrixs inside a cell array
 %EventsMat = cell2mat(Events);
 %size(EventsMat)
