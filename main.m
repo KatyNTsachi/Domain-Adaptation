@@ -6,9 +6,9 @@ subject=1;
 cov_of_all_events=covFromCellArrayOfEvents(Events);
 group1=1;
 group2=2;
-group1_cov=cov_of_all_events(vClass==group1,:,:);
-group2_cov=cov_of_all_events(vClass==group2,:,:);
-step=1e-4;
+group1_cov=cov_of_all_events(:,:,vClass==group1);
+group2_cov=cov_of_all_events(:,:,vClass==group2);
+step=1e-1;
 epsilon=1;
 max_num_of_iter=100;
 
@@ -18,14 +18,6 @@ dist11=calcDistanceBetweenOneCovAndLotOfCov(mean1,group1_cov);
 dist12=calcDistanceBetweenOneCovAndLotOfCov(mean1,group2_cov);
 dist21=calcDistanceBetweenOneCovAndLotOfCov(mean2,group1_cov);
 dist22=calcDistanceBetweenOneCovAndLotOfCov(mean2,group2_cov);       
-
-
-
-% dist 12 is the distance of group 2 to center of group 1
-% dist11 = [0,0,0,0];
-% dist12 = [2,3,3,4];
-% dist21 = [2,3,3,4];
-% dist22 = [1,2,3,3];
 
 figure();
 scatter(dist11,dist21);

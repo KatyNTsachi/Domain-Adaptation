@@ -1,11 +1,11 @@
 function [ret_distance] = calcDistanceBetweenOneCovAndLotOfCov(mean,group_cov)
     
-    ret_distance=zeros(size(group_cov,1),1);
-    num_of_iter=size(group_cov,1);
+    ret_distance=zeros(size(group_cov,3),1);
+    num_of_iter=size(group_cov,3);
     inv_mean=inv(mean);
     
-    for i=1:num_of_iter
-        tmp_cov=squeeze(group_cov(i,:,:));
+    parfor i=1:num_of_iter
+        tmp_cov=group_cov(:,:,i);
         in_log=inv_mean*tmp_cov;
         eig_value=eig(in_log);
         eig_value_log=log(eig_value);

@@ -9,7 +9,7 @@ function [ret_p] = projectToRiemannianSpace(p,s)
     %is it list of mat or just one?
     if size(size(s),2)==3
         ret_p=zeros(size(s,1),size(s,2),size(s,3));
-        num_of_matrics=size(s,1);
+        num_of_matrics=size(s,3);
     else
         ret_p=zeros(size(s,1),size(s,2));
         num_of_matrics=0;
@@ -17,10 +17,10 @@ function [ret_p] = projectToRiemannianSpace(p,s)
     
     if num_of_matrics~=0
         parfor i=1:num_of_matrics
-            tmp_s=squeeze(s(i,:,:));
+            tmp_s=squeeze(s(:,:,i));
             in_exp=p_minus_pow_half*tmp_s*p_minus_pow_half;
             exp_mat=expm(in_exp);
-            ret_p(i,:,:)=p_pow_half*exp_mat*p_pow_half;
+            ret_p(:,:,i)=p_pow_half*exp_mat*p_pow_half;
         end
     
     else

@@ -10,7 +10,7 @@ function [ret_p] = projectToTangentSpace(p,pi)
     %is it list of mat or just one?
     if size(size(pi),2)==3
         ret_p=zeros(size(pi,1),size(pi,2),size(pi,3));
-        num_of_matrics=size(pi,1);
+        num_of_matrics=size(pi,3);
     else
         ret_p=zeros(size(pi,1),size(pi,2));
         num_of_matrics=0;
@@ -18,10 +18,10 @@ function [ret_p] = projectToTangentSpace(p,pi)
     
     if num_of_matrics~=0
         parfor i=1:num_of_matrics
-            tmp_pi=squeeze(pi(i,:,:));
+            tmp_pi=pi(:,:,i);
             in_log=p_minus_pow_half*tmp_pi*p_minus_pow_half;
             log_mat=logm(in_log);
-            ret_p(i,:,:)=p_pow_half*log_mat*p_pow_half;
+            ret_p(:,:,i)=p_pow_half*log_mat*p_pow_half;
         end
     
     else
