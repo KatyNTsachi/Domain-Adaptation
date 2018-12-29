@@ -17,19 +17,19 @@ mean2=riemannianMean(group2_cov,step,epsilon,max_num_of_iter);
 dist11=calcDistanceBetweenOneCovAndLotOfCov(mean1,group1_cov);
 dist12=calcDistanceBetweenOneCovAndLotOfCov(mean1,group2_cov);
 dist21=calcDistanceBetweenOneCovAndLotOfCov(mean2,group1_cov);
-dist22=calcDistanceBetweenOneCovAndLotOfCov(mean2,group2_cov);       %need to implement
+dist22=calcDistanceBetweenOneCovAndLotOfCov(mean2,group2_cov);       
 
 
 
 % dist 12 is the distance of group 2 to center of group 1
-dist11 = [0,0,0,0];
-dist12 = [2,3,3,4];
-dist21 = [2,3,3,4];
-dist22 = [1,2,3,3];
+% dist11 = [0,0,0,0];
+% dist12 = [2,3,3,4];
+% dist21 = [2,3,3,4];
+% dist22 = [1,2,3,3];
 
-figure()
-hold on;
+figure();
 scatter(dist11,dist21);
+hold on;
 scatter(dist12,dist22,'d');
 title("Reimanian Distance to Reimanian mean");
 xlabel("reimanian Distance to mean1");
