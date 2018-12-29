@@ -19,13 +19,13 @@ function [ret_p] = projectToRiemannianSpace(p,s)
         parfor i=1:num_of_matrics
             tmp_s=squeeze(s(i,:,:));
             in_exp=p_minus_pow_half*tmp_s*p_minus_pow_half;
-            exp_mat=logm(in_exp);
+            exp_mat=expm(in_exp);
             ret_p(i,:,:)=p_pow_half*exp_mat*p_pow_half;
         end
     
     else
         in_exp=p_minus_pow_half*s*p_minus_pow_half;
-        exp_mat=logm(in_exp);
+        exp_mat=expm(in_exp);
         ret_p(:,:)=p_pow_half*exp_mat*p_pow_half;
     end
 
