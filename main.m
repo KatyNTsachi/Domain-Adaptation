@@ -6,7 +6,7 @@ subject=1;
 cov_of_all_events=covFromCellArrayOfEvents(Events);
 group1=1;
 group2=2;
-group1_cov=cov_of_all_events(vClass==group1,:,:);  
+group1_cov=cov_of_all_events(vClass==group1,:,:);
 group2_cov=cov_of_all_events(vClass==group2,:,:);
 step=1e-4;
 epsilon=1;
