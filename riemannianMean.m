@@ -2,15 +2,20 @@ function [P] = riemannianMean(group_cov,step,epsilon,max_num_of_iter)
     d = 2*epsilon;
     j=0;
     [N,~,n] = size(group_cov);
-    P = 0.1*rand(n,n);
-    S = projectToTangentSpace(P,group_cov);
+    P = mean(group_cov,1);
+    P=squeeze(P);
+    %S = projectToTangentSpace(P,group_cov);
     while d>epsilon && j<max_num_of_iter
-        delta = sum(S,1);
-        delta = squeeze(delta);
-        delta = 2*(delta - N*P);
+        %delta = sum(S,1);
+        %delta = squeeze(delta);
+        %delta = 2*(delta - N*P);
         
-        d = sum(delta,'all');
-        P=P-step*delta;
+        S = projectToTangentSpace(P,group_cov);
+        S_mean = mean(S,1);
+        S_mean=squeeze(S_mean);
+        P = projectToRiemannianSpace(P,S_mean);
+        d = det(P*P');
+        %P=P-step*delta;
         j=j+1;
     end
 end
