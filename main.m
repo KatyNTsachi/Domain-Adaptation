@@ -8,6 +8,9 @@ group1=1;
 group2=2;
 group1_cov=cov_of_all_events(vClass==group1,:,:);  
 group2_cov=cov_of_all_events(vClass==group2,:,:);
+step=1e-4;
+epsilon=1;
+max_num_of_iter=100;
 
 mean1=riemannianMean(group1_cov,step,epsilon,max_num_of_iter);
 mean2=riemannianMean(group2_cov,step,epsilon,max_num_of_iter);
