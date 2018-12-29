@@ -7,11 +7,11 @@ function [ret_p] = projectToRiemannianSpace(p,s)
     p_minus_pow_half=mpower(p,-0.5);
     
     %is it list of mat or just one?
-    if size(size(pi),2)==3
-        ret_p=zeros(size(pi,1),size(pi,2),size(pi,3));
-        num_of_matrics=size(pi,1);
+    if size(size(s),2)==3
+        ret_p=zeros(size(s,1),size(s,2),size(s,3));
+        num_of_matrics=size(s,1);
     else
-        ret_p=zeros(size(pi,1),size(pi,2));
+        ret_p=zeros(size(s,1),size(s,2));
         num_of_matrics=0;
     end
     
