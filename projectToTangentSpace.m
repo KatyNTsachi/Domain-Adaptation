@@ -17,11 +17,11 @@ function [ret_p] = projectToTangentSpace(P, Pi)
     end
     
     if num_of_matrics ~= 0
-        parfor i=1:num_of_matrics
-            tmp_pi       = Pi(:,:,i);
+        parfor ii=1:num_of_matrics
+            tmp_pi       = Pi(:,:,ii);
             in_log       = p_minus_pow_half * tmp_pi * p_minus_pow_half;
             log_mat      = logm(in_log);
-            ret_p(:,:,i) = p_pow_half * log_mat * p_pow_half;
+            ret_p(:,:,ii) = p_pow_half * log_mat * p_pow_half;
         end
     else
         in_log=p_minus_pow_half*Pi*p_minus_pow_half;
