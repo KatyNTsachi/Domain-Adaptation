@@ -2,6 +2,7 @@ function [Events, vClass] = GetEvents(subject, day)
 
 %     load BPF.mat;
     dirPath = '..\..\Dataset\';
+%    dirPath = 'C:\Users\Oryair\Desktop\Workarea\BCI\BCICIV_2a_gdf\';
     
     if day == 1
         fileName    = ['A0', num2str(subject), 'T.gdf'];
