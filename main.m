@@ -16,17 +16,17 @@ max_iter          = 100;
 
 mean1  = riemannianMean(class1_cov, epsilon, max_iter);
 mean2  = riemannianMean(class2_cov, epsilon, max_iter);
-dist11 = calcDistanceBetweenCovMat(mean1,class1_cov);
-dist12 = calcDistanceBetweenCovMat(mean1,class2_cov);
-dist21 = calcDistanceBetweenCovMat(mean2,class1_cov);
-dist22 = calcDistanceBetweenCovMat(mean2,class2_cov);       
+dist11 = calcDistanceBetweenCovMat(mean1, class1_cov);
+dist12 = calcDistanceBetweenCovMat(mean1, class2_cov);
+dist21 = calcDistanceBetweenCovMat(mean2, class1_cov);
+dist22 = calcDistanceBetweenCovMat(mean2, class2_cov);       
 
 %% print
+figure; hold on; grid on; set(gca, 'FontSize', 16);
+scatter(dist11, dist21, 50, 'Fill', 'MarkerEdgeColor', 'k');
+scatter(dist12, dist22, 50, 'Fill', 'MarkerEdgeColor', 'k');
+axis equal;
 
-figure();
-scatter(dist11,dist21,'filled');
-hold on;
-scatter(dist12,dist22,'filled');
-title("Reimanian Distance to Reimanian mean");
-xlabel("reimanian Distance to mean1");
-ylabel("reimanian Distance to mean2");
+title('Reimanian Distance to Reimanian mean');
+xlabel('Reimanian distance to class 1 mean');
+ylabel('Reimanian distance to class 2 mean');
