@@ -1,6 +1,5 @@
 function P = riemannianMean(group_cov, epsilon, max_iter)
 
-%     [~, n, N] = size(group_cov);
     P = mean(group_cov, 3);
 
     for jj = 1 : max_iter
