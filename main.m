@@ -39,11 +39,13 @@ class1_cov_projected_to_two_cov = reshape(class1_cov_projected_to_two_cov, num_o
 class2_cov_projected_to_two_cov = reshape(class2_cov_projected_to_two_cov, num_of_features,[]);
 
 %calc svm
+
 X = [class1_cov_projected_to_two_cov,class2_cov_projected_to_two_cov]
 Y = [ ones( size(class1_cov_projected_to_two_cov,2),1 ); ones(size(class1_cov_projected_to_two_cov,2),1) * 2 ];
-Mdl = fitcsvm(X',Y);
+Mdl = fitcsvm();
 tmp = [X',Y]
 
+data_for_classifier = prepareForClassification(cov_of_all_events,vClass);
 
 
 
