@@ -1,6 +1,5 @@
 close all
-clear
-
+clear all
 %% prepare for calc
 day               = 1;
 subject           = 3;
@@ -42,8 +41,8 @@ class2_cov_projected_to_two_cov = reshape(class2_cov_projected_to_two_cov, num_o
 %calc svm
 X = [class1_cov_projected_to_two_cov,class2_cov_projected_to_two_cov]
 Y = [ ones( size(class1_cov_projected_to_two_cov,2),1 ); ones(size(class1_cov_projected_to_two_cov,2),1) * 2 ];
-Mdl = fitcsvm(X',Y)
-
+Mdl = fitcsvm(X',Y);
+tmp = [X',Y]
 
 
 
