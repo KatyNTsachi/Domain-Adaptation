@@ -52,10 +52,11 @@ Md_corr    = fitcecoc( data_for_classifier_correlation(1:end-1,:)', ...
 label_corr = predict(Md_corr.Trained{1},data_for_classifier_correlation(1:end-1,:)');
 C_corr     = confusionmat(data_for_classifier_correlation(end,:),label_corr);
 confusionchart(C_corr);
-title('correlation');correlation
+title('covariance');
 
 %% svm for partialCorrelation 
 partial_corr_of_all_events = partialCorrelationFromCellArrayOfEvents(Events);
+
 data_for_classifier_par_correlation = prepareForClassification(partial_corr_of_all_events,vClass);
 
 
