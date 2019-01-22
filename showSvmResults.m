@@ -1,10 +1,12 @@
-function [] = showSvmResults( input_data, input_lable, input_title)
+function [] = showSvmResults( input_data, input_lable, input_title, base_func)
     %calc svm and show confusion matrix
+    t = templateSVM('Standardize',1,'KernelFunction',base_func);
     Mdl       = fitcecoc( input_data', ...
                           input_lable, ...
-                          'KFold', 10);
+                          'KFold', 10, ...
+                          'Learners', t);
     avr_loss = kfoldLoss(Mdl);
-    disp(['The average value of the loss of ' ,input_title, ' is: ',num2str(avr_loss)]);
+    disp( ["feature:  " + input_title + "    base func: " +  base_func  + "    average loss: " + num2str(avr_loss)] );
 %     %-- for showing confusion mat
 %     predicted_label = predict( Mdl.Trained{1}, input_data' );
 %     figure;
