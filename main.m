@@ -1,5 +1,6 @@
 close all
-clear all
+clear
+
 %% prepare for calc
 day               = 1;
 subject           = 3;
@@ -31,16 +32,21 @@ xlabel('Reimanian distance to class 1 mean');
 ylabel('Reimanian distance to class 2 mean');
 
 %% svm for Covariance
+data_for_classifier_cov = prepareForClassification(cov_of_all_events);
 
-data_for_classifier_cov = prepareForClassification(cov_of_all_events,vClass);
 
 %calc svm and show confusion matrix
-Md_cov    = fitcecoc( data_for_classifier_cov(1:end-1,:)', ...
-                  data_for_classifier_cov(end,:), 'Holdout', 0.15);
-label_cov = predict(Md_cov.Trained{1},data_for_classifier_cov(1:end-1,:)');
+Md_cov    = fitcecoc( data_for_classifier_cov', vClass, 'KFold', 5);
+label_cov = Md_cov.kfoldPredict();
+
+
+% label_cov = predict(Md_cov.Trained{1},data_for_classifier_cov(1:end-1,:)');
 C_cov     = confusionmat(data_for_classifier_cov(end,:),label_cov);
-confusionchart(C_cov);
-title('covariance');
+% confusionchart(C_cov);
+% title('covariance');
+figure; plotconfusion(vClass, label_cov);
+
+
 %% svm for Correlation 
 
 corr_of_all_events              = correlationFromCellArrayOfEvents(Events);

@@ -1,5 +1,4 @@
-
-function [data] = prepareForClassification(cov_of_all_events,vClass)
+function [data] = prepareForClassification(cov_of_all_events)
     % prepare data for classifier.
     % each column of data is a sample
     % each row of data is a feature
@@ -11,7 +10,6 @@ function [data] = prepareForClassification(cov_of_all_events,vClass)
 
     cov_projected_on_mean = projectToTangentSpace(mean, cov_of_all_events);
     cov_projected_on_mean = symetric2Vec(cov_projected_on_mean);
-
-    data = [cov_projected_on_mean;vClass'];
-
+    
+    data = cov_projected_on_mean;
 end
