@@ -13,18 +13,32 @@ for ii=1:length(Events)
     F_Events{ii} = abs( fft( Events{ii} ) );
 end
 
-funcs = {@covFromCellArrayOfEvents, @correlationFromCellArrayOfEvents, @partialCorrelationFromCellArrayOfEvents};
-funcs_names = {"Covariance", "Correlation", "Partial Correlation"};
-events_names = {" on Furier transform", " on time series"};
-events_cell = {Events, F_Events};
+funcs       = { @covFromCellArrayOfEvents, @correlationFromCellArrayOfEvents, @partialCorrelationFromCellArrayOfEvents };
+funcs_names = { "Covariance"             , "Correlation"                    , "Partial Correlation"  };
 
-for ii = 1:length(events_cell)% Fourier or not
-    for func_idx=1:length(funcs)% Covarience Correlation or Partial Correlation
-        data_for_classifier = prepareForClassification( funcs{func_idx}(events_cell{ii}) );
-        for base_func=["gaussian" "linear" "polynomial"]% SVM Kernal
-            showSvmResults( data_for_classifier, vClass, funcs_names{func_idx}+events_names{ii} ,base_func);
+
+events_names = {" on time series", " on Furier transform"};
+events_cell  = { Events          , F_Events};
+
+%-- Fourier or not
+for ii = 1:length(events_cell)
+    
+    %-- Covarience Correlation or Partial Correlation
+    for func_idx=1:length(funcs)
+        
+        vectors_of_features = funcs{func_idx}(events_cell{ii});
+        data_for_classifier = prepareForClassification( vectors_of_features );
+        
+        %-- SVM Kernal
+        for base_func=["gaussian" "linear" "polynomial"]
+            
+            description_of_classifier_and_fetures = funcs_names{func_idx} + events_names{ii};
+            showSvmResults( data_for_classifier, vClass, description_of_classifier_and_fetures, base_func );
+            showSvmResultsNoDiag( data_for_classifier, vClass, description_of_classifier_and_fetures, base_func, size(vectors_of_features,1));
         end
-    end  
+        
+    end 
+    
 end
 
 
