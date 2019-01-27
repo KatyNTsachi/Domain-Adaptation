@@ -1,6 +1,7 @@
-function [] = showSvmResultsNoDiag( input_data, input_lable, input_title, base_func,D)
+function [string_return] = showSvmResultsNoDiag( input_data, input_lable, input_title, base_func,D)
     
     %-- remove diag
+    string_return      = []
     ones_size_of_input = ones( D, D );
     pattern_for_factor = ( triu( ones_size_of_input, 1 )==1 );
     pattern_for_factor = pattern_for_factor( triu( ones_size_of_input ) == 1 );
@@ -13,7 +14,8 @@ function [] = showSvmResultsNoDiag( input_data, input_lable, input_title, base_f
                           'KFold', 10, ...
                           'Learners', t);
     avr_loss = kfoldLoss(Mdl);
-    disp( ["feature:  " + input_title + "NO DIAG    base func: " +  base_func  + "    average loss: " + num2str(avr_loss)] );
+    string_return = [ input_title,  base_func, num2str(avr_loss) ];
+
 %     %-- for showing confusion mat
 %     predicted_label = predict( Mdl.Trained{1}, input_data' );
 %     figure;
