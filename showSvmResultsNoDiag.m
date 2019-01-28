@@ -1,7 +1,7 @@
 function [string_return] = showSvmResultsNoDiag( input_data, input_lable, input_title, base_func,D)
     
     %-- remove diag
-    string_return      = []
+    string_return      = [];
     ones_size_of_input = ones( D, D );
     pattern_for_factor = ( triu( ones_size_of_input, 1 )==1 );
     pattern_for_factor = pattern_for_factor( triu( ones_size_of_input ) == 1 );
@@ -15,6 +15,11 @@ function [string_return] = showSvmResultsNoDiag( input_data, input_lable, input_
                           'Learners', t);
     avr_loss = kfoldLoss(Mdl);
     string_return = [ input_title,  base_func, num2str(avr_loss) ];
+
+    %-- show
+    tsne_points = tsne(input_data');
+    figure();
+    scatter( tsne_points(:,1), tsne_points(:,2), 20, input_lable, 'filled' );
 
 %     %-- for showing confusion mat
 %     predicted_label = predict( Mdl.Trained{1}, input_data' );

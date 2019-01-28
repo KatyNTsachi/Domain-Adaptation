@@ -45,9 +45,7 @@ for ii = 1:length(events_cell)
                                                                     description_of_classifier_and_fetures,...
                                                                     base_func,...
                                                                     size(vectors_of_features,1)) ];
-       
         end
-        
     end 
     
     %--show table
