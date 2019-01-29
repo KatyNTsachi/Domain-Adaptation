@@ -1,7 +1,6 @@
 function [string_return] = showSvmResults( input_data, input_lable, input_title, base_func)
     %calc svm and show confusion matrix
-    string_return = [];
-    t             = templateSVM('Standardize', 1, 'KernelFunction', base_func);
+    t             = templateSVM('Standardize', false, 'KernelFunction', base_func);
     Mdl           = fitcecoc( input_data', ...
                               input_lable, ...
                               'KFold', 10, ...
@@ -11,8 +10,9 @@ function [string_return] = showSvmResults( input_data, input_lable, input_title,
     
     %-- show
     tsne_points = tsne(input_data');
-    figure();
-    scatter( tsne_points(:,1), tsne_points(:,2), 20, input_lable, 'filled' );
+    figure;
+    scatter(tsne_points(:,1), tsne_points(:,2), 50, input_lable, 'Fill', 'MarkerEdgeColor', 'k');
+    title(string_return);
 
 %     %-- for showing confusion mat
 %     predicted_label = predict( Mdl.Trained{1}, input_data' );

@@ -1,15 +1,15 @@
 close all
 clear
+
 %% prepare for calc 
 day               = 1;
-subject           = 3;
+subject           = 8;
 [Events, vClass]  = GetEvents( subject, day );
-epsilon           = 1e-6;
-max_iter          = 100;
+N                 = length(Events);
 
 %-- Create Forier Events 
-F_Events={length(Events)};
-for ii=1:length(Events)
+F_Events{N} = [];
+for ii = 1 : N
     F_Events{ii} = abs( fft( Events{ii} ) );
 end
 
@@ -18,33 +18,35 @@ funcs_names = { "Covariance"             , "Correlation"                    , "P
 
 
 events_names    = {" on time series", " on Furier transform"};
-%events_cell     = { Events          , F_Events};
-events_cell     = { F_Events          , Events};
+events_cell     = { Events          , F_Events};
+% events_cell     = { F_Events          , Events};
 table_to_show   = [];
 titles          = { 'feature', 'baseFunction', 'averageLoss' };
 
 %-- Fourier or not
-for ii = 1:length(events_cell)
+for ii = 1 : length(events_cell)
     
     %-- Covarience Correlation or Partial Correlation
-    for func_idx=1:length(funcs)
+    for func_idx = 1 : length(funcs)
         
         vectors_of_features = funcs{func_idx}(events_cell{ii});
         data_for_classifier = prepareForClassification( vectors_of_features );
         
         %-- SVM Kernal
-        for base_func=["gaussian" "linear" "polynomial"]
+        for base_func = ["gaussian", "linear", "polynomial"]
             
             description_of_classifier_and_fetures = funcs_names{func_idx} + events_names{ii};
-            table_to_show                         = [ table_to_show; showSvmResults( data_for_classifier,...
-                                                                     vClass,...
-                                                                     description_of_classifier_and_fetures,...
-                                                                     base_func ) ];
-            table_to_show                         = [table_to_show; showSvmResultsNoDiag(   data_for_classifier,...
-                                                                    vClass,...
-                                                                    description_of_classifier_and_fetures,...
-                                                                    base_func,...
-                                                                    size(vectors_of_features,1)) ];
+            table_to_show                         = [ table_to_show;
+                                                      showSvmResults( data_for_classifier,...
+                                                                      vClass,...
+                                                                      description_of_classifier_and_fetures,...
+                                                                      base_func ) ];
+                                                                  
+%             table_to_show                         = [table_to_show; showSvmResultsNoDiag(   data_for_classifier,...
+%                                                                     vClass,...
+%                                                                     description_of_classifier_and_fetures,...
+%                                                                     base_func,...
+%                                                                     size(vectors_of_features,1)) ];
         end
     end 
     
