@@ -5,7 +5,7 @@ function [corEvents] = partialCorrelationFromCellArrayOfEvents( Events )
     chanels_num = size(Events{1}, 2);
     corEvents   = nan(chanels_num, chanels_num, length( Events ) );
 
-    for nn = 1 : length(Events)
+    parfor nn = 1 : length(Events)
         corr_i                     = corrcoef(Events{nn});
         corEvents(:, :, nn)        = corr_i;
         corr_i_inv                 = inv( corr_i );

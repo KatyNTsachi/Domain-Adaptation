@@ -15,8 +15,8 @@ function mX = CovsToVecs(Covs, mMean)
     
     mW = sqrt(2) * ones(D) - (sqrt(2) - 1) * eye(D);
     for kk = 1 : K
-        Skk      = logm(mCSR * Covs(:,:,kk) * mCSR) .* mW;
-        mX(:,kk) = Skk(triu(true(size(Skk))));
+        Skk(:,:,kk) = logm(mCSR * Covs(:,:,kk) * mCSR); % .* mW;
+        %mX(:,kk) = Skk(triu(true(size(Skk))));
     end
     
     mToep       = toeplitz(1:D);

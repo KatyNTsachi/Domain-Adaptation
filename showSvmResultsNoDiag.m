@@ -14,7 +14,7 @@ function [string_return] = showSvmResultsNoDiag( input_data, input_lable, input_
                           'KFold', 10, ...
                           'Learners', t);
     avr_loss = kfoldLoss(Mdl);
-    string_return = [ input_title,  base_func, num2str(avr_loss) ];
+    string_return = [ input_title+"No DIAG",  base_func, num2str(avr_loss) ];
 
     %-- show
     tsne_points = tsne(input_data');

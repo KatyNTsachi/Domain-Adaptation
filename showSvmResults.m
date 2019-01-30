@@ -8,11 +8,6 @@ function [string_return] = showSvmResults( input_data, input_lable, input_title,
     avr_loss      = kfoldLoss(Mdl);
     string_return = [ input_title,  base_func, num2str(avr_loss) ];
     
-    %-- show
-    tsne_points = tsne(input_data');
-    figure;
-    scatter(tsne_points(:,1), tsne_points(:,2), 50, input_lable, 'Fill', 'MarkerEdgeColor', 'k');
-    title(string_return);
 
 %     %-- for showing confusion mat
 %     predicted_label = predict( Mdl.Trained{1}, input_data' );
