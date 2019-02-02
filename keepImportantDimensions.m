@@ -21,7 +21,7 @@ function [ v_short_classifier, good_features ] = keepImportantDimensions( v_clas
     end
     
     s_tmp = [];
-    while(true)
+    while( size( v_short_classifier, 1 ) > 1 )
 
         tic;
         ii              = ii+1;
@@ -42,7 +42,7 @@ function [ v_short_classifier, good_features ] = keepImportantDimensions( v_clas
 
             end
 
-            if sum_of_loss < prev_sum_of_loss + epsilon
+            if sum_of_loss <= prev_sum_of_loss + epsilon
                 
                 good_features(ii_feature) = [];
                 prev_sum_of_loss          = sum_of_loss;

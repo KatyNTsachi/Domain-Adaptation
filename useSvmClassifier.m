@@ -146,9 +146,11 @@ T.Properties.VariableNames = titles
 %% -------------------------------------------------------------------------------------------------------------------------------
 
 %% testing
+
+
 table_to_show = [];
 base_func     = "linear";
-X             = double( rand(1, 100) > 0.5 )
+X             = double( rand(1, 100) > 0.5 );
 random        = [X; 10 * rand(100,100) ] ;
 tsne_points1  = tsne(random');
 x_class       = X;
@@ -355,6 +357,33 @@ table_to_show = [ table_to_show;
                                   description_of_classifier_and_fetures,...
                                   base_func ) ];                              
 table_to_show                     
-                              
-                              
-                              
+                                                            
+
+
+%% testing 2 
+clc
+table_to_show = [];
+base_func     = "linear";
+X             = double( rand(1, 100) > 0.5 );
+random        = [X; 10 * rand(5,100) ] ;
+tsne_points1  = tsne(random');
+x_class       = X;
+%-- show
+figure;
+scatter( tsne_points1( :, 1 ), tsne_points1( :, 2 ),...
+         50, x_class, 'Fill',...
+         'MarkerEdgeColor', 'k');
+description_of_classifier_and_fetures = "random";
+title(description_of_classifier_and_fetures);
+
+%--do calsification
+table_to_show = [ table_to_show;
+                  showSvmResults( random,...
+                                  x_class,...
+                                  description_of_classifier_and_fetures,...
+                                  base_func ) ];
+T  = table( table_to_show(:,1),...
+            table_to_show(:,2),...
+            table_to_show(:,3) )
+
+[ new_random, goot_fe ] = keepImportantDimensions( random, x_class );
