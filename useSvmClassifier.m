@@ -332,7 +332,7 @@ end
                
 
 %% reduce dimentinality by our technique
- 
+clc 
 table_to_show  = [];
 N              = size(events_cell{1},2);
 new_event_cell = {};
@@ -346,9 +346,6 @@ v_classifier  = prepareForClassification( m_features );
 base_func     = "linear";
      
 
-%%
-
-clc
 [v_new_classifier, good_features] = keepImportantDimensions( v_classifier, vClass );
 save( "good_features", good_features );    
 table_to_show = [ table_to_show;

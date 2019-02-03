@@ -1,7 +1,7 @@
 function [ v_short_classifier, good_features ] = keepImportantDimensions( v_classifier, vClass)
 
     base_func          = "linear";
-    epsilon            = 0;
+    epsilon            = 0.001;
     N                  = 10;
     ii                 = 0;
     v_short_classifier = v_classifier;
