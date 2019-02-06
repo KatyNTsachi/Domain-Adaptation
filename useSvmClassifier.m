@@ -7,138 +7,58 @@ subject           = 8;
 [Events, vClass]  = GetEvents( subject, day );
 N                 = length(Events);
 
+%-- Create STFT Events
+STFTEvents = getSTFTEvents(Events, vClass);
+
 %-- Create Forier Events 
-F_Events{N} = [];
-Fourier_and_Time = {};
 parfor ii = 1 : N
     F_Events{ii} = abs( fft( Events{ii} ) );
 end
 
-funcs       = { @covFromCellArrayOfEvents, @correlationFromCellArrayOfEvents, @partialCorrelationFromCellArrayOfEvents };
-funcs_names = { "Covariance"             , "Correlation"                    , "Partial Correlation"  };
+%% preprocessing - dimentionality reduction
 
 
-events_names    = {" on time series", " on Furier transform"};
-events_cell     = { Events          , F_Events              };
-table_to_show   = [];
-titles          = { 'feature', 'baseFunction', 'averageLoss' };
-%%
-%-- Fourier or not
-for ii = 1 : length(events_cell)
-    
-    %-- Covarience Correlation or Partial Correlation
-    for func_idx = 1 : length(funcs)
-        
-        vectors_of_features = funcs{func_idx}(events_cell{ii});
-        v_classifier = prepareForClassification( vectors_of_features );
-        
-        %-- show
-        tsne_points = tsne(v_classifier');
-        figure;
-        scatter( tsne_points(:,1), tsne_points(:,2),...
-                 50, vClass, 'Fill',...
-                 'MarkerEdgeColor', 'k');
-             
-             
-        description_of_classifier_and_fetures = funcs_names{func_idx} + events_names{ii};
-        title(description_of_classifier_and_fetures);
 
-        
-        
-        %-- SVM Kernal
-        for base_func = ["linear", "gaussian", "polynomial"]
-            
-            
-  
-            table_to_show = [ table_to_show;
-                              showSvmResults( v_classifier,...
-                                              vClass,...
-                                              description_of_classifier_and_fetures,...
-                                              base_func ) ];
-                                                                  
-            table_to_show = [ table_to_show; 
-                                showSvmResultsNoDiag( v_classifier,...
-                                                      vClass,...
-                                                      description_of_classifier_and_fetures,...
-                                                      base_func,...
-                                                      size(vectors_of_features,1)) ];
-        end
-    end 
-    
-end
+%% preprocessing - add more features
 
-%% time
+
+
+
+%% doing covariance correlation and partial correlation
+
+% funcs       = { @covFromCellArrayOfEvents, @correlationFromCellArrayOfEvents, @partialCorrelationFromCellArrayOfEvents };
+% funcs_names = { "Covariance"             , "Correlation"                    , "Partial Correlation"  };
+funcs       = { @covFromCellArrayOfEvents};
+funcs_names = { "Covariance"};
+
+% events_names    = {" on time series", " on Furier transform", " short furier transform"};
+% events_cell     = { Events          , F_Events              , STFTEvents};
+events_names    = {"on time series", "on Furier transform"};
+events_cell     = { Events          , F_Events};
+
+%set base functions
+% all_base_functions = ["linear", "gaussian", "polynomial"];
+all_base_functions = ["linear"];
+
+%extract the features
+[c_data_for_classifier, c_description_for_data] = extractFeatures( events_cell, events_names,...
+                                                                 funcs, funcs_names, vClass)
+
+%% add more data
+c_data_for_classifier{3} = [c_data_for_classifier{1}; c_data_for_classifier{2}];
+c_description_for_data{3}   = "time and furier";
+
+%% preprocessing - dimentionality reduction
+
+                                                             
+%% just run svm
+%get svm loss for the funcs and input the we set up here
 table_to_show = [];
-m_features1   = funcs{1}(events_cell{1});
-v_classifier1 = prepareForClassification( m_features1 );
+table_to_show = calcSvmLoss( c_data_for_classifier, vClass,...
+                             description_for_data, all_base_functions,...
+                             table_to_show)
 
-tsne_points1  = tsne(v_classifier1');
-figure;
-scatter( tsne_points1(:,1), tsne_points1(:,2),...
-         50, vClass, 'Fill',...
-         'MarkerEdgeColor', 'k');
-description_of_classifier_and_fetures = "time";
-title(description_of_classifier_and_fetures);
 
-%--clasification
-table_to_show = [ table_to_show;
-                              showSvmResults( v_classifier1,...
-                                              vClass,...
-                                              description_of_classifier_and_fetures,...
-                                              base_func ) ];
-                                          
-                                       
-%% fourier
-
-m_features2 = funcs{1}(events_cell{2});
-v_classifier2 = prepareForClassification( m_features2 );
-
-tsne_points2 = tsne(v_classifier2');
-figure;
-scatter( tsne_points2(:,1), tsne_points2(:,2),...
-         50, vClass, 'Fill',...
-         'MarkerEdgeColor', 'k');
-description_of_classifier_and_fetures = "fourier";
-title(description_of_classifier_and_fetures);
-
-%--clasification
-table_to_show = [ table_to_show;
-                              showSvmResults( v_classifier2,...
-                                              vClass,...
-                                              description_of_classifier_and_fetures,...
-                                              base_func ) ];
-
-%% combine time and fourier
-
-v_classifier = [v_classifier1; v_classifier2];
-tsne_points = tsne(v_classifier');
-
-%-- show
-figure;
-scatter( tsne_points(:,1), tsne_points(:,2),...
-         50, vClass, 'Fill',...
-         'MarkerEdgeColor', 'k');
-description_of_classifier_and_fetures = "time + fourier searies with cov";
-title(description_of_classifier_and_fetures);
-
-%--clasification
-table_to_show = [ table_to_show;
-                              showSvmResults( v_classifier,...
-                                              vClass,...
-                                              description_of_classifier_and_fetures,...
-                                              base_func ) ];
-
-%%
-
-%--show table
-
-T                          = table( table_to_show(:,1),...
-                                    table_to_show(:,2),...
-                                    table_to_show(:,3) );
-T.Properties.VariableNames = titles
-%%
-%% -------------------------------------------------------------------------------------------------------------------------------
-%% -------------------------------------------------------------------------------------------------------------------------------
 %% -------------------------------------------------------------------------------------------------------------------------------
 %% -------------------------------------------------------------------------------------------------------------------------------
 %% -------------------------------------------------------------------------------------------------------------------------------
@@ -362,7 +282,9 @@ clc
 table_to_show = [];
 base_func     = "linear";
 X             = double( rand(1, 100) > 0.5 );
-random        = [X; 10 * rand(5,100) ] ;
+random        = 10 * rand( 50, 100 );
+random        = random + X;
+random(1,:)   = X;
 tsne_points1  = tsne(random');
 x_class       = X;
 %-- show
@@ -383,4 +305,4 @@ T  = table( table_to_show(:,1),...
             table_to_show(:,2),...
             table_to_show(:,3) )
 
-[ new_random, goot_fe ] = keepImportantDimensions( random, x_class );
+[ new_random, goot_fe ] = keepImportantDimensions2( random, x_class );
