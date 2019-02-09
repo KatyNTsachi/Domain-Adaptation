@@ -22,11 +22,11 @@ function [c_spectorm] = getSTFTEvents(Events, vClass)
     for ii=1:N
         m_spectrom = [];
         time_samples = Events{ii};
-        for jj=1:22
+        for jj = 1 : size(time_samples, 2)
             tmp_time_vec   = time_samples(:,jj);
             tmp            = abs(spectrogram( tmp_time_vec, windows_size));
-            tmp( int32(0.7*size(tmp,1)) : end, : ) = [] ;
-            m_spectrom(:,jj) = tmp(:);
+            tmp( int32( 0.7 * size(tmp,1) ) : end, : ) = [] ;
+            m_spectrom(:, jj) = tmp(:);
             %[a,tmp_spec]   = max(tmp, [], 2);
             %m_spectrom     = [m_spectrom, tmp_spec];
         end 
