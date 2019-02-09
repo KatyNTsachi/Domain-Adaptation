@@ -1,7 +1,6 @@
-function [ v_short_classifier, bad_features ] = AddImportantDimensions( v_classifier, vClass)
+function [ v_short_classifier, bad_features ] = AddImportantDimensions( v_classifier, vClass, epsilon)
 
     base_func          = "linear";
-    epsilon            = 0;
     N                  = 1;
     ii                 = 0;
     v_short_classifier = []; % v_classifier;
@@ -25,15 +24,14 @@ function [ v_short_classifier, bad_features ] = AddImportantDimensions( v_classi
                                                       vClass,...
                                                       "linear",...
                                                       base_func ) ;
+                                                  
                 sum_of_loss = sum_of_loss + str2num ( s_tmp(3) );
 
             end
 
-            if sum_of_loss <= prev_sum_of_loss + epsilon
-                %good_features(ii_feature) = [];
+            if sum_of_loss < prev_sum_of_loss + epsilon
                 feature_to_add            = ii_feature;
                 prev_sum_of_loss          = sum_of_loss;
-                %v_short_classifier        = tmp_classifier;
                 break_the_while           = false;
                 
             end
@@ -43,9 +41,9 @@ function [ v_short_classifier, bad_features ] = AddImportantDimensions( v_classi
         if break_the_while == true
             break;
         else
+            v_short_classifier              = [v_short_classifier; v_classifier(feature_to_add, :)];
             bad_features(feature_to_add)    = [];
             v_classifier(feature_to_add, :) = [];
-            v_short_classifier              = [v_short_classifier; v_classifier(feature_to_add, :)];
         end    
         
         time  = toc;
