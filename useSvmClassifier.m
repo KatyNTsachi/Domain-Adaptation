@@ -90,39 +90,57 @@ all_base_functions = ["linear"];
 
 
 %% preprocessing - dimentionality reduction
-epsilon = 0.0;
-for ii = 1 : length(c_data_for_classifier)
-    
-    [ v_short_classifier, bad_features ] = AddImportantDimensions( c_data_for_classifier{ii} , vClass, epsilon);
-    
-    c_short_classifier{ii} = v_short_classifier;
-    c_bad_features{ii}     = bad_features;
+epsilon = 0.0001;
+min_dim_number = [10, 15, 20, 25, 30]; 
+idx = 1;  
+for jj = 1 : length(c_data_for_classifier)
+    for ii = 1:length( min_dim_number )
+        %min_dim_number = min_dim_number + 5;
+        [ v_short_classifier, bad_features ] = AddImportantDimensions( c_data_for_classifier{jj} , vClass, epsilon, min_dim_number(ii) );
+
+        c_short_classifier{idx}             = v_short_classifier;
+        c_short_classifier_description(idx) = c_description_for_data{jj} + " reduced to min " + num2str(ii) + "dimentions";
+        c_bad_features{idx}                 = bad_features;
+        idx =  idx + 1;
+    end
     
 end
+
+
 %% combine data
 
-tmp = [];
-
-for ii = 1 : length(c_short_classifier)
-    tmp = [ tmp; c_short_classifier{ii}];
-end
-
-c_data_for_classifier { length(c_data_for_classifier ) + 1 } = tmp;
-c_description_for_data{ length(c_description_for_data) + 1 } = "all top features togather";
+[ c_combine_data, c_description ] = combineFeatures( c_short_classifier );
 
 
+%% create one data
+
+ [ c_combined_data, c_combined_description ] = combineThreeCellArray(   c_data_for_classifier, c_description_for_data,...
+                                                                        c_short_classifier, c_short_classifier_description,...
+                                                                        c_combine_data, c_description);
 
 %% just run svm
 %get svm loss for the funcs and input the we set up here
+% table_to_show = [];
+% table_to_show = calcSvmLoss( c_short_classifier, vClass,...
+%                              c_description_for_data, all_base_functions,...
+%                              table_to_show)
+
 table_to_show = [];
-table_to_show = calcSvmLoss( c_data_for_classifier, vClass,...
-                             c_description_for_data, all_base_functions,...
+table_to_show = calcSvmLoss( c_combine_data, vClass,...
+                             c_description, all_base_functions,...
                              table_to_show)
+
 
 %% run svm on all training - not very interesting
 %get svm loss for the funcs and input the we set up here
-table_to_show = [];
-table_to_show = calcSvmLossAllTraining(  c_data_for_classifier, vClass,...
-                                         c_description_for_data, all_base_functions,...
-                                         table_to_show)
+% table_to_show = [];
+% table_to_show = calcSvmLossAllTraining(  c_short_classifier, vClass,...
+%                                          c_description_for_data, all_base_functions,...
+%                                          table_to_show)
                          
+
+
+table_to_show = [];
+table_to_show = calcSvmLossAllTraining(  c_combine_data, vClass,...
+                                         c_description, all_base_functions,...
+                                         table_to_show)
