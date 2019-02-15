@@ -90,7 +90,7 @@ all_base_functions = ["linear"];
 
 
 %% preprocessing - dimentionality reduction
-epsilon = 0.0001;
+epsilon = -0.0001;
 min_dim_number = [10, 15, 20, 25, 30]; 
 idx = 1;  
 for jj = 1 : length(c_data_for_classifier)

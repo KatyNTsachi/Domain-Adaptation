@@ -31,7 +31,7 @@ function [ v_short_classifier, bad_features ] = AddImportantDimensions( v_classi
 
             end
             % adding a feature improves loss
-            if sum_of_loss < prev_sum_of_loss + epsilon
+            if sum_of_loss < prev_sum_of_loss + epsilon 
                 add_another_feature = true;
             end
             % choose best feature to add
@@ -42,7 +42,7 @@ function [ v_short_classifier, bad_features ] = AddImportantDimensions( v_classi
 
         end
         
-        if (add_another_feature == false) && ( dims < min_dim_number )
+        if (add_another_feature == false) && ( dims > min_dim_number )
             break;
         else
             v_short_classifier              = [v_short_classifier; v_classifier(feature_to_add, :)];
