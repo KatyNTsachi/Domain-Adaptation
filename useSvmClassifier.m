@@ -31,9 +31,6 @@ extended_data_Events                           = extendData(Events);
 extended_data_STFTEvents                       = extendData(STFTEvents);
 extended_data_F_Events                         = extendData(F_Events);
 
-%% extend data - orr sugestion
-w = 34;
-extended_data_Events_with_const_fetures = addTimeWindowChanels(extended_data_Events,w);
 
 
 %% doing covariance correlation and partial correlation
@@ -90,8 +87,19 @@ all_base_functions = ["linear"];
 
 %extract the features
 [c_data_for_classifier, c_description_for_data] = extractFeatures( events_cell, events_names,...
-                                                                   funcs, funcs_names, vClass)
+                                                                   funcs, funcs_names, vClass );
 
+%% extend data - orr suggestion
+
+c_data_to_add_waves             = { Events                  , STFTEvents,...
+                                    F_Events };
+c_data_to_add_waves_description = { "Events time with waves", "short time furier Events time with waves",...
+                                    "furier Events time with waves" };
+                                
+num_of_waves                    = 31;
+[c_data_for_classifier, c_description_for_data] = addWavesToData(   c_data_for_classifier, c_description_for_data,...
+                                                                    c_data_to_add_waves   , c_data_to_add_waves_description,...
+                                                                    num_of_waves );
 
 %% preprocessing - dimentionality reduction
 epsilon = -0.0001;

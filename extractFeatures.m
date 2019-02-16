@@ -9,9 +9,22 @@ function [c_data_for_classifier, c_description_for_data] = extractFeatures( even
     
         %-- Covarience Correlation or Partial Correlation
         for func_idx = 1 : length(funcs)
-
-            vectors_of_features = funcs{func_idx}(events_cell{ii});
-            v_classifier = prepareForClassification( vectors_of_features );
+            
+            %check if exists
+            file_name = "EF " + func2str(funcs{func_idx}) + " " + events_names{ii}; 
+            file_path = "../data/" + file_name ;
+            
+            if exist( file_path + ".mat", 'file' )
+                
+                tmp          = load(  file_path + ".mat" );
+                v_classifier = tmp.v_classifier;
+                
+            else 
+                
+                vectors_of_features = funcs{func_idx}(events_cell{ii});
+                v_classifier = prepareForClassification( vectors_of_features );
+                
+            end
 
             %-- show
             tsne_points = tsne(v_classifier');
@@ -29,6 +42,11 @@ function [c_data_for_classifier, c_description_for_data] = extractFeatures( even
             c_description_for_data{data_counter}  = description_of_classifier_and_fetures;
             
             data_counter = data_counter + 1;
+            
+            %save the calculation
+            if exist( file_path + ".mat", 'file' ) ~= 2
+                save( file_path + ".mat", 'v_classifier' );
+            end
         end 
 
     end
