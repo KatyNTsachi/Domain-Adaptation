@@ -31,8 +31,6 @@ extended_data_Events                           = extendData(Events);
 extended_data_STFTEvents                       = extendData(STFTEvents);
 extended_data_F_Events                         = extendData(F_Events);
 
-
-
 %% doing covariance correlation and partial correlation
 c_data_for_classifier  = {};
 c_description_for_data = {};
@@ -96,14 +94,14 @@ c_data_to_add_waves             = { Events                  , STFTEvents,...
 c_data_to_add_waves_description = { "Events time with waves", "short time furier Events time with waves",...
                                     "furier Events time with waves" };
                                 
-num_of_waves                    = 31;
+waves_size = 31;
 [c_data_for_classifier, c_description_for_data] = addWavesToData(   c_data_for_classifier, c_description_for_data,...
                                                                     c_data_to_add_waves   , c_data_to_add_waves_description,...
-                                                                    num_of_waves );
+                                                                    waves_size );
 
 %% preprocessing - dimentionality reduction
 epsilon = -0.0001;
-min_dim_number = [10, 15, 20, 25, 30]; 
+min_dim_number = [30]; 
 idx = 1;  
 for jj = 1 : length(c_data_for_classifier)
     for ii = 1:length( min_dim_number )
