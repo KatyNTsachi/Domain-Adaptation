@@ -101,17 +101,27 @@ waves_size = 31;
 
 %% preprocessing - dimentionality reduction
 epsilon = -0.0001;
-min_dim_number = [30]; 
+min_dim_number = [10, 15, 20, 25, 30]; 
 idx = 1;  
-for jj = 1 : length(c_data_for_classifier)
-    for ii = 1:length( min_dim_number )
-        %min_dim_number = min_dim_number + 5;
-        [ v_short_classifier, bad_features ] = AddImportantDimensions( c_data_for_classifier{jj} , vClass, epsilon, min_dim_number(ii) );
+c_short_classifier             = {};
+c_short_classifier_description = {};
+c_bad_features                 = {};
 
-        c_short_classifier{idx}             = v_short_classifier;
-        c_short_classifier_description(idx) = c_description_for_data{jj} + " reduced to min " + num2str(ii) + "dimentions";
-        c_bad_features{idx}                 = bad_features;
+for jj = 1 : length(c_data_for_classifier)
+    
+    for ii = 1:length( min_dim_number )
+
+        [ v_short_classifier, bad_features ] = AddImportantDimensions(  c_data_for_classifier{jj},...
+                                                                        c_description_for_data{jj},...
+                                                                        vClass,...
+                                                                        epsilon,...
+                                                                        min_dim_number(ii) );
+
+        c_short_classifier{idx}              = v_short_classifier;
+        c_short_classifier_description{idx}  = c_description_for_data{jj} + " reduced to min " + num2str(ii) + "dimentions";
+        c_bad_features{idx}                  = bad_features;
         idx =  idx + 1;
+        
     end
     
 end
@@ -120,7 +130,6 @@ end
 %% combine data
 
 [ c_combine_data, c_description ] = combineFeatures( c_short_classifier );
-
 
 %% create one data
 
