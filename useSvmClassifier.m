@@ -31,6 +31,10 @@ extended_data_Events                           = extendData(Events);
 extended_data_STFTEvents                       = extendData(STFTEvents);
 extended_data_F_Events                         = extendData(F_Events);
 
+%% extend data - orr sugestion
+w = 34;
+extended_data_Events_with_const_fetures = addTimeWindowChanels(extended_data_Events,w);
+
 
 %% doing covariance correlation and partial correlation
 c_data_for_classifier  = {};
@@ -47,7 +51,7 @@ funcs_names = { "Covariance"};
 %                     "on extended pca reduce data Events"               , "on extended pca reduce data STFTEvents",...
 %                     "on extended pca reduce data STFTEvents whole time", "on extended pca reduce data F Events",...
 %                     "on extended data Events"                          , "on extended data STFTEvents",...
-%                     "on extended data F Events"};
+%                     "on extended data F Events"                        , "on extended data Events with const fetures"};
 
 % events_cell     = { Events                                         , STFTEvents,...
 %                     STFTEvents_whole_time                          , F_Events,...
@@ -56,7 +60,7 @@ funcs_names = { "Covariance"};
 %                     extended_pca_reduce_data_Events                , extended_pca_reduce_data_STFTEvents,...
 %                     extended_pca_reduce_data_STFTEvents_whole_time , extended_pca_reduce_data_F_Events,...
 %                     extended_data_Events                           , extended_data_STFTEvents,...
-%                     extended_data_F_Events};
+%                     extended_data_F_Events                         , extended_data_Events_with_const_fetures};
 
 
 
