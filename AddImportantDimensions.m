@@ -5,10 +5,10 @@ function [ v_short_classifier, bad_features ] = AddImportantDimensions( v_classi
                                                                         min_dim_number )
     
 
-    file_name1 = "RD " + "v_short_classifier " + description; 
+    file_name1 = "RD " + "v_short_classifier " + num2str(min_dim_number) + description; 
     file_path1 = "../data/" + file_name1 ;
     
-    file_name2 = "RD " + "bad_features " + description; 
+    file_name2 = "RD " + "bad_features " + num2str(min_dim_number) + description; 
     file_path2 = "../data/" + file_name2 ;
 
     %-- if exists, load
