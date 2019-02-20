@@ -9,7 +9,7 @@ function [ c_data_for_classifier, c_description_for_data ] = addWavesToData(    
             events_num = length(data_i);
 
             %-- check if exists
-            file_name = c_data_to_add_waves_description{ii} + "wave size: " + num2str(wave_size); 
+            file_name = c_data_to_add_waves_description{ii} + "wave size" + num2str(wave_size); 
             file_path = "../data/" + file_name ;
 
             %-- if exists, load
