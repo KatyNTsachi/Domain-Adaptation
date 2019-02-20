@@ -123,7 +123,7 @@ for jj = 1 : length(c_data_for_classifier)
         idx =  idx + 1;
         
     end
-    
+   
 end
 
 
@@ -137,6 +137,7 @@ end
                                                                         c_short_classifier, c_short_classifier_description,...
                                                                         c_combine_data, c_description);
 
+
 %% just run svm
 %get svm loss for the funcs and input the we set up here
 % table_to_show = [];
@@ -145,8 +146,8 @@ end
 %                              table_to_show)
 
 table_to_show = [];
-table_to_show = calcSvmLoss( c_combine_data, vClass,...
-                             c_description, all_base_functions,...
+table_to_show = calcSvmLoss( c_combined_data, vClass,...
+                             c_combined_description, all_base_functions,...
                              table_to_show)
 
 
@@ -160,6 +161,6 @@ table_to_show = calcSvmLoss( c_combine_data, vClass,...
 
 
 table_to_show = [];
-table_to_show = calcSvmLossAllTraining(  c_combine_data, vClass,...
-                                         c_description, all_base_functions,...
+table_to_show = calcSvmLossAllTraining(  c_combined_data, vClass,...
+                                         c_combined_description, all_base_functions,...
                                          table_to_show)

@@ -11,7 +11,7 @@ function [ c_combined_data, c_combined_description ] = combineThreeCellArray(   
         c_combined_description{idx} = c_description_for_data{ii};
         idx = idx + 1;
     end
-
+    
     for ii = 1:length(c_short_classifier)
         c_combined_data{idx}        = c_short_classifier{ii};
         c_combined_description{idx} = c_short_classifier_description{ii};
