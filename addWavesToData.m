@@ -51,7 +51,7 @@ function [ c_data_for_classifier, c_description_for_data ] = addWavesToData(    
 
             %-- add to return cell array
             c_data_for_classifier{ length(c_data_for_classifier) + 1 }   = res;
-            c_description_for_data{ length(c_description_for_data) + 1 } = c_data_to_add_waves_description{ii};
+            c_description_for_data{ length(c_description_for_data) + 1 } = c_data_to_add_waves_description{ii} + "wave size " + num2str(wave_size);
 
         end
     end

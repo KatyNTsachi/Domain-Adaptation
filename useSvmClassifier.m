@@ -76,58 +76,32 @@ waves_size = [10, 20, 30, 40, 50, 60];
                                                          c_data_to_add_waves_description,...
                                                          waves_size );
 
-%% preprocessing - dimentionality reduction
-epsilon = -0.0001;
-min_dim_number = [10, 15, 20, 25, 30]; 
-idx = 1;  
-c_short_classifier             = {};
-c_short_classifier_description = {};
-c_bad_features                 = {};
 
-for jj = 1 : length(c_data_for_classifier_with_waves)
+
+%% create one data
+[ c_combined_data, c_combined_description ] = combineThreeCellArray(   c_data_for_classifier, c_description_for_data,...
+                                                                       c_short_classifier, c_short_classifier_description,...
+                                                                       c_combine_data, c_description);
+
+%% -- check
+
+  
     
-    for ii = 1:length( min_dim_number )
+table_to_show = [];
+table_to_show = calcSvmLoss( c_data_for_classifier_with_waves , vClass,...
+                             c_description_for_data_with_waves, all_base_functions,...
+                             table_to_show)
 
-        [ v_short_classifier, bad_features ] = AddImportantDimensions(  c_data_for_classifier_with_waves{jj},...
-                                                                        c_description_for_data_with_waves{jj},...
-                                                                        vClass,...
-                                                                        epsilon,...
-                                                                        min_dim_number(ii) );
+                                                            
+                                                                    
+                                                                    
+%% just run svm
+%--get svm loss for the funcs and input the we set up here
+table_to_show = [];
+table_to_show = calcSvmLoss( c_short_classifier, vClass,...
+                             c_description_for_data, all_base_functions,...
+                             table_to_show)
 
-        c_short_classifier{idx}              = v_short_classifier;
-        c_short_classifier_description{idx}  = c_description_for_data{jj} + " reduced to min " + num2str(ii) + "dimentions";
-        c_bad_features{idx}                  = bad_features;
-        idx =  idx + 1;
-        
-    end
-   
-end
-
-
-%% combine data
-% 
-% [ c_combine_data, c_description ] = combineFeatures( c_short_classifier );
-% 
-% %% create one data
-% 
-%  [ c_combined_data, c_combined_description ] = combineThreeCellArray(   c_data_for_classifier, c_description_for_data,...
-%                                                                         c_short_classifier, c_short_classifier_description,...
-%                                                                         c_combine_data, c_description);
-% 
-% 
-% %% just run svm
-% %get svm loss for the funcs and input the we set up here
-% % table_to_show = [];
-% % table_to_show = calcSvmLoss( c_short_classifier, vClass,...
-% %                              c_description_for_data, all_base_functions,...
-% %                              table_to_show)
-% 
-% table_to_show = [];
-% table_to_show = calcSvmLoss( c_combined_data, vClass,...
-%                              c_combined_description, all_base_functions,...
-%                              table_to_show)
-% 
-% 
 % %% run svm on all training - not very interesting
 % %get svm loss for the funcs and input the we set up here
 % % table_to_show = [];
