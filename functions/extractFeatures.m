@@ -15,7 +15,6 @@ function [c_data_for_classifier, c_description_for_data] = extractFeatures( even
             file_path = "../data/" + file_name ;
             
             if exist( file_path + ".mat", 'file' )
-                
                 tmp          = load(  file_path + ".mat" );
                 v_classifier = tmp.v_classifier;
                 

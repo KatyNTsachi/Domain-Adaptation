@@ -1,6 +1,7 @@
 close all
 clear
-
+addpath("./functions")
+    
 %% prepare for calc 
 day               = 1;
 subject           = 8;
@@ -61,5 +62,5 @@ end
 table_to_show = [];
 table_to_show = calcSvmLossTnV( c_data_for_classifier_combined, vClass,...
                                 c_description_for_data_classifier_combined, all_base_functions,...
-                                table_to_show);
+                                table_to_show)
 

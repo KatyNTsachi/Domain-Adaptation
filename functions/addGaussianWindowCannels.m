@@ -1,4 +1,5 @@
-function [c_data_with_const_fetures] = addGaussianWindowCannels(c_data, sigma)
+function [c_data_with_const_fetures] = addGaussianWindowCannels(  c_data,...
+                                                                                        sigma)
     
     windows_in_time = [];
     miu             = 1:74:750; 
