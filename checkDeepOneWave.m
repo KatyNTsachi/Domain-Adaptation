@@ -8,8 +8,9 @@ num_days     = 2
 num_subjects = 9
 vClass = [];
 Events = {};
-for day = 1:num_days
-    for subject = 1:num_subjects
+
+for subject = 1:num_subjects
+    for day = 1:num_days
         [tmp_Events, tmp_vClass]  = GetEvents( subject, day );
         Events = combineTwoCellArrays(Events,tmp_Events);
         vClass = [vClass; tmp_vClass];
