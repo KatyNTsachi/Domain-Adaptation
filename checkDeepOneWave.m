@@ -4,7 +4,8 @@ addpath("./functions/")
 
 %% --prepare for calc 
 clc
-
+num_days     = 2 
+num_subjects = 9
 vClass = [];
 Events = {};
 for day = 1:num_days
@@ -18,45 +19,65 @@ end
 %% --Devide to test training and            
 m_data   = cell2mat(Events);
 v_lables = kron(vClass, ones(22,1));
-max_diff = 10;
-while true
-    b_training   = rand( size(v_lables,1),1 ) > 0.3;
-    b_test       = ~b_training;
 
-    %--test our division
-    class_one   = sum(v_lables(b_training)==1);
-    class_two   = sum(v_lables(b_training)==2);
-    class_three = sum(v_lables(b_training)==3);
-    class_four  = sum(v_lables(b_training)==4);
-    avg = (class_one + class_two + class_three + class_four)/4;
-    if abs(class_one - avg)< max_diff && abs(class_two - avg)< max_diff && abs(class_three - avg)< max_diff && abs(class_four - avg)< max_diff
-        break;
-    end
-end
+start_of_train = 1;
+end_of_train   = int32(size(v_lables,1) * 0.7);
+start_of_val   = end_of_train + 1 ;
+end_of_val     = int32(size(v_lables,1) * 0.8);
+start_of_test  = end_of_val + 1;
+end_of_test    = size(v_lables,1);
 
-m_train_data  = m_data(:,b_training);
-v_train_lable = v_lables(b_training);
-m_test_data   = m_data(:,b_test);
-v_test_lable  = v_lables(b_test);
 
-%-- shaffel data
-test_perm  = randperm(length(v_test_lable));
+
+m_train_data  = m_data(:,start_of_train:end_of_train);
+v_train_lable = v_lables(start_of_train:end_of_train);
+
+m_val_data    = m_data(:,start_of_val:end_of_val);
+v_val_lable   = v_lables(start_of_val:end_of_val);
+
+m_test_data   = m_data(:,start_of_test:end_of_test);
+v_test_lable  = v_lables(start_of_test:end_of_test);
+
+%-- shuffel data
 train_perm = randperm(length(v_train_lable));
-%val_perm   = randperm(length(v_val_lable));
+val_perm   = randperm(length(v_val_lable));
+test_perm  = randperm(length(v_test_lable));
 
+%--change the order
 m_train_data  = m_train_data(:,train_perm);
 v_train_lable = v_train_lable(train_perm);
+
+m_val_data   = m_val_data(:,val_perm);
+v_val_lable  = v_val_lable(val_perm);
+
 m_test_data   = m_test_data(:,test_perm);
 v_test_lable  = v_test_lable(test_perm);
-%m_val_data   = m_test_data(:,test_perm);
-%v_val_lable  = v_test_lable(test_perm);
+
+%% set the data to network
+v_train_lable_categorical = discretize(v_train_lable,[0.5 1.5 2.5 3.5 4.5],...
+                                       'categorical', {'1' '2' '3' '4'});
+tmp_m_train_data           = reshape(m_train_data,750,1,1,[]);     
+
+
+
+v_val_lable_categorical = discretize(v_val_lable,[0.5 1.5 2.5 3.5 4.5],...
+                                       'categorical', {'1' '2' '3' '4'});
+tmp_m_val_data          = reshape(m_val_data,750,1,1,[]);     
+
+
+
+v_test_lable_categorical = discretize(v_test_lable,[0.5 1.5 2.5 3.5 4.5],...
+                                       'categorical', {'1' '2' '3' '4'});
+tmp_m_test_data          = reshape(m_test_data,750,1,1,[]);     
+
+
 
 %% cut hte data
 
-m_train_data  = m_train_data(:,1:500);
-v_train_lable = v_train_lable(1:500);
-m_val_data    = m_train_data
-v_val_lable   = v_train_lable
+% m_train_data  = m_train_data(:,1:500);
+% v_train_lable = v_train_lable(1:500);
+% m_val_data    = m_train_data
+% v_val_lable   = v_train_lable
 
 
 %% define network structure
@@ -105,30 +126,28 @@ layers = [
     softmaxLayer
     classificationLayer];
     
+
+
 %% training options
 
-v_train_lable_categorical = discretize(v_train_lable,[0.5 1.5 2.5 3.5 4.5],...
-                                       'categorical', {'1' '2' '3' '4'});
-tmp_m_train_data = reshape(m_train_data,[750,1,1,500]);     
 
 options = trainingOptions('sgdm', ...
     'InitialLearnRate',0.01, ...
     'MaxEpochs',100, ...
     'Shuffle','every-epoch', ...
-    'ValidationData',{tmp_m_train_data, v_train_lable_categorical}, ...
+    'ValidationData',{tmp_m_val_data, v_val_lable_categorical}, ...
     'ValidationFrequency',30, ...
     'Verbose',false, ...
     'Plots','training-progress');
 
 %% train 
 
-%c_train_data = mat2cell(m_train_data,[750],ones(500,1));
 net = trainNetwork( tmp_m_train_data, v_train_lable_categorical, layers, options );
 
 %% test accuracy
 
-YPred       = classify(net,tmp_m_train_data);
-YValidation = v_train_lable_categorical;
+YPred       = classify(net,tmp_m_test_data);
+YValidation = v_test_lable_categorical;
 
 accuracy = sum(YPred == YValidation)/numel(YValidation)
 

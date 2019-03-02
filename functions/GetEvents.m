@@ -17,7 +17,7 @@ function [Events, vClass] = GetEvents(subject, day)
         
         [mEEG, H] = sload([dirPath, fileName]);
         mEEG      = mEEG(:,1:22); %-- reomving EOG, (EEG only)
-        vClass    = H.Classlabel;
+        vClass    = classlabel;
         vTrig     = H.TRIG;
     end
 
@@ -33,13 +33,13 @@ function [Events, vClass] = GetEvents(subject, day)
     
     vNanIdx         = isnan(sum(mEEG,2));
     mEEG(vNanIdx,:) = 0;
-%   mEEG            = conv2(mEEG, BPF', 'same');
+%     mEEG            = conv2(mEEG, BPF', 'same');
     mEEG            = conv2(mEEG, vBPF', 'same');
     
     for ii = 1 : 288
         mEvent = mEEG(vTrig(ii) : (vTrig(ii) + nFull - 1),:);
         mEvent = mEvent(startIdx : endIdx, :);
-%       mEvent = mEvent ./ std(mEvent, [], 2);
+%         mEvent = mEvent ./ std(mEvent, [], 2);
         Events{ii} = mEvent;
     
     end
