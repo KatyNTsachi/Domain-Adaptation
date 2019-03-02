@@ -1,8 +1,11 @@
 function [ c_data_for_classifier, c_description_for_data ] = covWIthConstFeatures(  c_data_to_add_waves  , c_data_to_add_waves_description,...
                                                                                     addConstFeaturesFunc ,params )
+                                                                                
+    idx = 1;
+    
     for param = params
         for ii = 1 : length(c_data_to_add_waves)
-
+            
             data_i     = c_data_to_add_waves{ii};
             events_num = length(data_i);
 
@@ -48,8 +51,9 @@ function [ c_data_for_classifier, c_description_for_data ] = covWIthConstFeature
             end
 
             %-- add to return cell array
-            c_data_for_classifier{ ii }  = res;
-            c_description_for_data{ ii } = file_name;
+            c_data_for_classifier{ idx }  = res;
+            c_description_for_data{ idx } = file_name;
+            idx = idx + 1;
 
         end
     end
