@@ -54,6 +54,16 @@ v_val_lable  = v_val_lable(val_perm);
 m_test_data   = m_test_data(:,test_perm);
 v_test_lable  = v_test_lable(test_perm);
 
+
+%% cut the data
+
+% m_train_data  = m_train_data(:,1:500);
+% v_train_lable = v_train_lable(1:500);
+% m_val_data  = m_train_data;
+% v_val_lable = v_train_lable;
+% 
+
+
 %% set the data to network
 v_train_lable_categorical = discretize(v_train_lable,[0.5 1.5 2.5 3.5 4.5],...
                                        'categorical', {'1' '2' '3' '4'});
@@ -73,83 +83,129 @@ tmp_m_test_data          = reshape(m_test_data,750,1,1,[]);
 
 
 
-%% cut hte data
-
-% m_train_data  = m_train_data(:,1:500);
-% v_train_lable = v_train_lable(1:500);
-% m_val_data    = m_train_data
-% v_val_lable   = v_train_lable
-
-
 %% define network structure
+
+% layers = [
+%     
+%     imageInputLayer([int32(size(m_train_data,1)), int32(1)])
+%     %-- layer 1
+%     convolution2dLayer([3 1], 4,'Padding','same')
+%     batchNormalizationLayer
+%     reluLayer
+%     dropoutLayer
+%     maxPooling2dLayer([2 1],'Stride',2)
+%     
+%     %-- layer 2
+%     convolution2dLayer([3 1], 8,'Padding','same')
+%     batchNormalizationLayer
+%     reluLayer
+%     dropoutLayer
+%     maxPooling2dLayer([2 1],'Stride',2)
+%     
+%     
+%     %-- layer 3
+%     convolution2dLayer([3 1], 16,'Padding','same')
+%     batchNormalizationLayer
+%     reluLayer
+%     dropoutLayer
+%     maxPooling2dLayer([2 1],'Stride',2)
+%     
+%     %-- layer 4
+%     convolution2dLayer([3 1], 32,'Padding','same')
+%     batchNormalizationLayer
+%     reluLayer
+%     dropoutLayer
+%     maxPooling2dLayer([2 1],'Stride',2)
+%     
+%     %-- layer 5
+%     convolution2dLayer([3 1], 64,'Padding','same')
+%     batchNormalizationLayer
+%     reluLayer
+%     dropoutLayer
+%     maxPooling2dLayer([2 1],'Stride',2)
+%     
+%     %-- layer 6
+%     convolution2dLayer([3 1], 128,'Padding','same')
+%     batchNormalizationLayer
+%     reluLayer
+%     
+%     
+%     %-- fully connected
+%     fullyConnectedLayer(4)
+%     softmaxLayer
+%     classificationLayer];
+
+
+
 
 layers = [
     
     imageInputLayer([int32(size(m_train_data,1)), int32(1)])
     %-- layer 1
-    convolution2dLayer([3 1], 4,'Padding','same')
+    convolution2dLayer([60 1], 80,'Padding','same')
     batchNormalizationLayer
     reluLayer
-    maxPooling2dLayer([2 1],'Stride',2)
+    maxPooling2dLayer([4 1],'Stride',1)
+    dropoutLayer
     
     %-- layer 2
-    convolution2dLayer([3 1], 8,'Padding','same')
+    convolution2dLayer([1 1], 80,'Padding','same')
     batchNormalizationLayer
     reluLayer
     maxPooling2dLayer([2 1],'Stride',2)
     
+
     
-    %-- layer 3
-    convolution2dLayer([3 1], 16,'Padding','same')
-    batchNormalizationLayer
-    reluLayer
-    maxPooling2dLayer([2 1],'Stride',2)
-    
-    %-- layer 4
-    convolution2dLayer([3 1], 32,'Padding','same')
-    batchNormalizationLayer
-    reluLayer
-    maxPooling2dLayer([2 1],'Stride',2)
-    
-    %-- layer 5
-    convolution2dLayer([3 1], 64,'Padding','same')
-    batchNormalizationLayer
-    reluLayer
-    maxPooling2dLayer([2 1],'Stride',2)
-    
-    %-- layer 6
-    convolution2dLayer([3 1], 128,'Padding','same')
-    batchNormalizationLayer
-    reluLayer
-       
     %-- fully connected
-    fullyConnectedLayer(4)
-    softmaxLayer
-    classificationLayer];
+    fullyConnectedLayer(5000)
+    dropoutLayer
+    fullyConnectedLayer(5000)
+    dropoutLayer
     
+    
+    %--output
+    fullyConnectedLayer(4)    
+    softmaxLayer
+    
+    classificationLayer];
+
+
+
+
+
+
+
+
 
 
 %% training options
 
 
-options = trainingOptions('sgdm', ...
-    'InitialLearnRate',0.01, ...
-    'MaxEpochs',100, ...
-    'Shuffle','every-epoch', ...
-    'ValidationData',{tmp_m_val_data, v_val_lable_categorical}, ...
-    'ValidationFrequency',30, ...
-    'Verbose',false, ...
-    'Plots','training-progress');
+options = trainingOptions(  'sgdm', ...
+                            'InitialLearnRate',0.01, ...
+                            'MaxEpochs',10, ...
+                            'Shuffle','every-epoch', ...
+                            'ValidationData',{tmp_m_val_data, v_val_lable_categorical}, ...
+                            'ValidationFrequency',30, ...
+                            'Verbose',false, ...
+                            'Plots','training-progress');
 
 %% train 
 
 net = trainNetwork( tmp_m_train_data, v_train_lable_categorical, layers, options );
 
 %% test accuracy
-
 YPred       = classify(net,tmp_m_test_data);
 YValidation = v_test_lable_categorical;
 
 accuracy = sum(YPred == YValidation)/numel(YValidation)
+%% accuracy on val
+YPred       = classify(net, tmp_m_val_data);
+YValidation = v_val_lable_categorical;
 
+accuracy = sum(YPred == YValidation)/numel(YValidation)
+%% accuracy on train
+YPred       = classify(net, tmp_m_train_data);
+YValidation = v_train_lable_categorical;
 
+accuracy = sum(YPred == YValidation)/numel(YValidation)
