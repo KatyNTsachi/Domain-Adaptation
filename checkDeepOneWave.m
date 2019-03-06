@@ -4,8 +4,8 @@ addpath("./functions/")
 
 %% --prepare for calc 
 clc
-num_days     = 2 
-num_subjects = 9
+num_days     = 2;
+num_subjects = 9;
 vClass = [];
 Events = {};
 
@@ -61,7 +61,7 @@ v_test_lable  = v_test_lable(test_perm);
 % v_train_lable = v_train_lable(1:500);
 % m_val_data  = m_train_data;
 % v_val_lable = v_train_lable;
-% 
+
 
 
 %% set the data to network
@@ -170,7 +170,7 @@ layers = [
     classificationLayer];
 
 
-
+    
 
 
 
@@ -183,7 +183,7 @@ layers = [
 
 options = trainingOptions(  'sgdm', ...
                             'InitialLearnRate',0.01, ...
-                            'MaxEpochs',10, ...
+                            'MaxEpochs',300, ...
                             'Shuffle','every-epoch', ...
                             'ValidationData',{tmp_m_val_data, v_val_lable_categorical}, ...
                             'ValidationFrequency',30, ...
@@ -198,14 +198,14 @@ net = trainNetwork( tmp_m_train_data, v_train_lable_categorical, layers, options
 YPred       = classify(net,tmp_m_test_data);
 YValidation = v_test_lable_categorical;
 
-accuracy = sum(YPred == YValidation)/numel(YValidation)
+test_accuracy = sum(YPred == YValidation)/numel(YValidation)
 %% accuracy on val
 YPred       = classify(net, tmp_m_val_data);
 YValidation = v_val_lable_categorical;
 
-accuracy = sum(YPred == YValidation)/numel(YValidation)
+val_accuracy = sum(YPred == YValidation)/numel(YValidation)
 %% accuracy on train
 YPred       = classify(net, tmp_m_train_data);
 YValidation = v_train_lable_categorical;
 
-accuracy = sum(YPred == YValidation)/numel(YValidation)
+train_accuracy = sum(YPred == YValidation)/numel(YValidation)
