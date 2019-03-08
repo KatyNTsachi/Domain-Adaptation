@@ -87,18 +87,6 @@ all_base_functions = ["linear"];
 [c_data_for_classifier, c_description_for_data] = extractFeatures( events_cell, events_names,...
                                                                    funcs, funcs_names, vClass );
 
-%% extend data - orr suggestion
-
-c_data_to_add_waves             = { Events                  , STFTEvents,...
-                                    F_Events };
-c_data_to_add_waves_description = { "Events time with waves", "short time furier Events time with waves",...
-                                    "furier Events time with waves" };
-                                
-waves_size = 31;
-[c_data_for_classifier, c_description_for_data] = addWavesToData(   c_data_for_classifier, c_description_for_data,...
-                                                                    c_data_to_add_waves   , c_data_to_add_waves_description,...
-                                                                    waves_size );
-
 %% preprocessing - dimentionality reduction
 epsilon = -0.0001;
 min_dim_number = [10, 15, 20, 25, 30]; 

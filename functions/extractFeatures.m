@@ -15,7 +15,6 @@ function [c_data_for_classifier, c_description_for_data] = extractFeatures( even
             file_path = "../data/" + file_name ;
             
             if exist( file_path + ".mat", 'file' )
-                
                 tmp          = load(  file_path + ".mat" );
                 v_classifier = tmp.v_classifier;
                 
@@ -27,15 +26,15 @@ function [c_data_for_classifier, c_description_for_data] = extractFeatures( even
             end
 
             %-- show
-            tsne_points = tsne(v_classifier');
-            figure;
-            scatter( tsne_points(:,1), tsne_points(:,2),...
-                     50, vClass, 'Fill',...
-                     'MarkerEdgeColor', 'k');
+%             tsne_points = tsne(v_classifier');
+%             figure;
+%             scatter( tsne_points(:,1), tsne_points(:,2),...
+%                      50, vClass, 'Fill',...
+%                      'MarkerEdgeColor', 'k');
 
 
             description_of_classifier_and_fetures = funcs_names{func_idx} + events_names{ii};
-            title(description_of_classifier_and_fetures);
+            %title(description_of_classifier_and_fetures);
             
             %the return data
             c_data_for_classifier{data_counter} =  v_classifier;
