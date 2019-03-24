@@ -14,14 +14,23 @@ function [c_data_for_classifier, c_description_for_data] = extractFeatures( even
             file_name = "EF " + func2str(funcs{func_idx}) + " " + events_names{ii}; 
             file_path = "../data/" + file_name ;
             
-            if exist( file_path + ".mat", 'file' )
+            %if exist( file_path + ".mat", 'file' )
+            if false
                 tmp          = load(  file_path + ".mat" );
                 v_classifier = tmp.v_classifier;
                 
             else 
-                
+
                 vectors_of_features = funcs{func_idx}(events_cell{ii});
                 v_classifier = prepareForClassification( vectors_of_features );
+              
+%                 %if func2str( funcs{func_idx} ) == "covNoMean"
+%                 a = [[1 0];[0 1]];
+%                 b = ones( size(vectors_of_features,1) / 2 );
+%                 mask = kron(a,b); 
+%                 vec_mask = symetric2Vec(mask);
+%                 v_classifier = 10 * v_classifier.*vec_mask;
+%                 %end
                 
             end
 

@@ -21,7 +21,7 @@ function [c_data_with_const_fetures] = addTimeWindowChanels(c_data,w)
         if finish > N
             finish = N;
         end
-        tmp(start:finish) = 1;
+        tmp(start:finish) = 2*N/(finish-start);
         windows_in_time   = [windows_in_time, tmp];
         ii = ii + 1;
     end

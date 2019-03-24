@@ -9,7 +9,7 @@ function [c_data_with_const_fetures] = addGaussianWindowCannels(  c_data,...
     ii = 1;
     x  = (1:1:N)';
     for ii = 1:length(miu)
-        tmp               = normpdf(x,miu(ii),sigma);
+        tmp               = 1300*normpdf(x,miu(ii),sigma);
         windows_in_time   = [windows_in_time, tmp];
         ii = ii + 1;
     end
