@@ -25,14 +25,16 @@ figure; hold on; grid on; set(gca, 'FontSize', 16);
 scatter(dist11, dist21, 100, 'Fill', 'MarkerEdgeColor', 'k');
 scatter(dist12, dist22, 100, 'Fill', 'MarkerEdgeColor', 'k');
 axis equal;
+x=2:0.1:4;
+plot(x,x,'LineWidth',2,'color','k');
 
 title('Reimanian Distance to Reimanian mean','FontSize',25);
 
 set(gca,'xtick',[])
 set(gca,'ytick',[])
 
-xlabel('Reimanian Distance to "left hand"','FontSize',30);
-ylabel('Reimanian Distance to "right hand"','FontSize',30);
+xlabel('\delta_{R}(X,\mu_{LH})','FontSize',30);
+ylabel('\delta_{R}(X,\mu_{RH})','FontSize',30);
 legend('right hand', 'left hand','FontSize',22);
 
 
@@ -52,9 +54,11 @@ scatter(dist12, dist22, 100, 'Fill', 'MarkerEdgeColor', 'k');
 set(gca,'xtick',[])
 set(gca,'ytick',[])
 axis equal;
+x=1:0.1:2500;
+plot(x,x,'LineWidth',2,'color','k');
 
 
 title('Euclidean Distance to Euclidean mean','FontSize',25);
-xlabel('Euclidean Distance to "left hand"','FontSize',30);
-ylabel('Euclidean Distance to "right hand"','FontSize',30);
+xlabel('\delta_{R}(X,\mu_{LH})','FontSize',30);
+ylabel('\delta_{R}(X,\mu_{RH})','FontSize',30);
 legend('right hand', 'left hand','FontSize',22);

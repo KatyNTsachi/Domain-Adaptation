@@ -78,22 +78,21 @@ permutation = p*x;
 
 figure()
 subplot(2,1,1)
-plot(x)
+plot(x(1:100,:))
 set(gca,'xtick',[])
 set(gca,'ytick',[])
-title("Original",'FontSize',22)
+title("X",'FontSize',22)
 
 subplot(2,1,2)
-plot(permutation)
+plot(permutation(1:100,:))
 set(gca,'xtick',[])
 set(gca,'ytick',[])
-title("Permutation", 'FontSize',22)
-xlable("time", 'FontSize',22)
+title("P", 'FontSize',22)
+xlabel("time", 'FontSize',22)
 
 %-- show cov
 cov_permutation = (permutation')*(permutation);
 cov             = x'*x;
-
 
 figure()
 colormap(jet);
@@ -104,7 +103,9 @@ title("Covarience Of Signals", 'FontSize',22)
 cov = covFromCellArrayOfEvents({Events{1}});
 figure()
 colormap(jet);
-pcolor(cov);
+hImg = pcolor(cov);
+set(gca,'YDir','reverse' );
+set(hAxes,'YDir','reverse')
 colorbar;
 %imshow(cov,[])
 
@@ -175,7 +176,7 @@ tmp = Events{1} - mean(Events{1},1);
 Events_waves = addTimeWindowChanels({tmp}, w);
 
 
-figure()
+figure();
 
 num_chanels_to_show = 5;
 colormap jet;
@@ -200,7 +201,13 @@ for ii = idx
 end
 
 wave_cov = Events_waves{1}'*Events_waves{1};
-figure()
+figure();
+
+
 colormap(jet);
+
+
 pcolor(wave_cov);
+set(gca,'YDir','reverse' );
+set(hAxes,'YDir','reverse')
 
