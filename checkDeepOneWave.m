@@ -17,7 +17,7 @@ for subject = 1:num_subjects
     end
 end
 
-%% --Devide to test training and            
+%% --Devide to test training and validation          
 m_data   = cell2mat(Events);
 v_lables = kron(vClass, ones(22,1));
 
@@ -53,8 +53,10 @@ v_val_lable  = v_val_lable(val_perm);
 
 m_test_data   = m_test_data(:,test_perm);
 v_test_lable  = v_test_lable(test_perm);
-
-
+%%
+size(m_train_data);
+x = m_train_data(:,1);
+save("../tmp/1",'x');
 %% cut the data
 
 % m_train_data  = m_train_data(:,1:500);
@@ -85,89 +87,68 @@ tmp_m_test_data          = reshape(m_test_data,750,1,1,[]);
 
 %% define network structure
 
-% layers = [
-%     
-%     imageInputLayer([int32(size(m_train_data,1)), int32(1)])
-%     %-- layer 1
-%     convolution2dLayer([3 1], 4,'Padding','same')
-%     batchNormalizationLayer
-%     reluLayer
-%     dropoutLayer
-%     maxPooling2dLayer([2 1],'Stride',2)
-%     
-%     %-- layer 2
-%     convolution2dLayer([3 1], 8,'Padding','same')
-%     batchNormalizationLayer
-%     reluLayer
-%     dropoutLayer
-%     maxPooling2dLayer([2 1],'Stride',2)
-%     
-%     
-%     %-- layer 3
-%     convolution2dLayer([3 1], 16,'Padding','same')
-%     batchNormalizationLayer
-%     reluLayer
-%     dropoutLayer
-%     maxPooling2dLayer([2 1],'Stride',2)
-%     
-%     %-- layer 4
-%     convolution2dLayer([3 1], 32,'Padding','same')
-%     batchNormalizationLayer
-%     reluLayer
-%     dropoutLayer
-%     maxPooling2dLayer([2 1],'Stride',2)
-%     
-%     %-- layer 5
-%     convolution2dLayer([3 1], 64,'Padding','same')
-%     batchNormalizationLayer
-%     reluLayer
-%     dropoutLayer
-%     maxPooling2dLayer([2 1],'Stride',2)
-%     
-%     %-- layer 6
-%     convolution2dLayer([3 1], 128,'Padding','same')
-%     batchNormalizationLayer
-%     reluLayer
-%     
-%     
-%     %-- fully connected
-%     fullyConnectedLayer(4)
-%     softmaxLayer
-%     classificationLayer];
-
-
-
-
 layers = [
     
     imageInputLayer([int32(size(m_train_data,1)), int32(1)])
     %-- layer 1
-    convolution2dLayer([60 1], 80,'Padding','same')
+    convolution2dLayer([7 1], 4,'Padding','same')
     batchNormalizationLayer
     reluLayer
-    maxPooling2dLayer([4 1],'Stride',1)
     dropoutLayer
-    
-    %-- layer 2
-    convolution2dLayer([1 1], 80,'Padding','same')
-    batchNormalizationLayer
-    reluLayer
     maxPooling2dLayer([2 1],'Stride',2)
     
+    %-- layer 2
+    convolution2dLayer([7 1], 8,'Padding','same')
+    batchNormalizationLayer
+    reluLayer
+    dropoutLayer
+    maxPooling2dLayer([2 1],'Stride',2)
+    
+    
+    %-- layer 3
+    convolution2dLayer([7 1], 16,'Padding','same')
+    batchNormalizationLayer
+    reluLayer
 
     
     %-- fully connected
-    fullyConnectedLayer(5000)
-    dropoutLayer
-    fullyConnectedLayer(5000)
-    dropoutLayer
-    
-    
-    %--output
-    fullyConnectedLayer(4)    
+    fullyConnectedLayer(4)
     softmaxLayer
-    
     classificationLayer];
+
+
+
+
+% layers = [
+%     
+%     imageInputLayer([int32(size(m_train_data,1)), int32(1)])
+%     %-- layer 1
+%     convolution2dLayer([60 1], 80,'Padding','same')
+%     batchNormalizationLayer
+%     reluLayer
+%     maxPooling2dLayer([4 1],'Stride',1)
+%     dropoutLayer
+%     
+%     %-- layer 2
+%     convolution2dLayer([1 1], 80,'Padding','same')
+%     batchNormalizationLayer
+%     reluLayer
+%     maxPooling2dLayer([2 1],'Stride',2)
+%     
+% 
+%     
+%     %-- fully connected
+%     fullyConnectedLayer(5000)
+%     dropoutLayer
+%     fullyConnectedLayer(5000)
+%     dropoutLayer
+%     
+%     
+%     %--output
+%     fullyConnectedLayer(4)    
+%     softmaxLayer
+%     
+%     classificationLayer];
 
 
     
@@ -193,6 +174,8 @@ options = trainingOptions(  'sgdm', ...
 %% train 
 
 net = trainNetwork( tmp_m_train_data, v_train_lable_categorical, layers, options );
+%%
+view(net)
 
 %% test accuracy
 YPred       = classify(net,tmp_m_test_data);
