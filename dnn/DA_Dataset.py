@@ -27,12 +27,11 @@ class DA_Dataset(Dataset):
 
     def __getitem__(self, idx):
         
-        file_path = self.root_dir + str(idx) + '.mat'
+        file_path = self.root_dir + str(idx+1) + '.mat'
         x         = sio.loadmat(file_path)
-
         x         = np.transpose( x['x'] )
 
-        lable = self.lables[idx]
+        lable = self.lables[idx][0]-1
       
     
         sample = {'x': x, 'lable': lable}
