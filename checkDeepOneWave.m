@@ -2,61 +2,139 @@ close all
 clear
 addpath("./functions/")
 
+% %% --prepare for calc 
+% clc
+% num_days     = 2;
+% num_subjects = 9;
+% vClass = [];
+% Events = {};
+% 
+% for subject = 1:num_subjects
+%     for day = 1:num_days
+%         [tmp_Events, tmp_vClass]  = GetEvents( subject, day );
+%         Events = combineTwoCellArrays(Events,tmp_Events);
+%         vClass = [vClass; tmp_vClass];
+%     end
+% end
+%% extract and save
+
 %% --prepare for calc 
 clc
 num_days     = 2;
 num_subjects = 9;
-vClass = [];
-Events = {};
 
 for subject = 1:num_subjects
+    vClass = [];
+    Events = {};
     for day = 1:num_days
         [tmp_Events, tmp_vClass]  = GetEvents( subject, day );
         Events = combineTwoCellArrays(Events,tmp_Events);
         vClass = [vClass; tmp_vClass];
     end
+    
+    m_data   = cell2mat(Events);
+    v_lables = kron(vClass, ones(22,1));
+
+    start_of_train = 1;
+    end_of_train   = int32(size(m_data,2)*0.8);
+    start_of_test  = end_of_train + 1;
+    end_of_test    = size(v_lables,1);
+    
+    m_train_data  = m_data(:,start_of_train:end_of_train);
+    v_train_lable = v_lables(start_of_train:end_of_train);
+    m_test_data  = m_data(:,start_of_test:end_of_test);
+    v_test_lable = v_lables(start_of_test:end_of_test);
+    
+    train_perm = randperm(length(v_train_lable));
+    test_perm  = randperm(length(v_test_lable));
+
+    %--change the order
+    m_train_data  = m_train_data(:,train_perm);
+    v_train_lable = v_train_lable(train_perm);
+    
+    m_test_data  = m_test_data(:,test_perm);
+    v_test_lable = v_test_lable(test_perm);
+    
+    %save train
+    for ii = 1:size(m_train_data,2)
+        x = m_train_data(:,ii);
+        save("../tmp/train/" + num2str(subject) + "/" + num2str(ii), 'x');
+    end 
+    lable = v_train_lable;
+    save("../tmp/train/" + num2str(subject) + "/lable" , 'lable');
+
+    %save test
+    for ii = 1:size(m_test_data,2)
+        x = m_test_data(:,ii);
+        save("../tmp/test/" + num2str(subject) + "/" + num2str(ii), 'x');
+    end 
+    lable = v_train_lable;
+    save("../tmp/test/" + num2str(subject) + "/lable" , 'lable');
 end
+
+
 
 %% --Devide to test training and validation          
 m_data   = cell2mat(Events);
 v_lables = kron(vClass, ones(22,1));
 
 start_of_train = 1;
-end_of_train   = int32(size(v_lables,1) * 0.7);
-start_of_val   = end_of_train + 1 ;
-end_of_val     = int32(size(v_lables,1) * 0.8);
-start_of_test  = end_of_val + 1;
-end_of_test    = size(v_lables,1);
+% end_of_train   = int32(size(v_lables,1) * 0.8);
+end_of_train   = int32(500);
+% start_of_val   = end_of_train + 1 ;
+% end_of_val     = int32(size(v_lables,1) * 0.8);
+% start_of_test  = end_of_train + 1;
+% end_of_test    = size(v_lables,1);
 
 
 
 m_train_data  = m_data(:,start_of_train:end_of_train);
 v_train_lable = v_lables(start_of_train:end_of_train);
 
-m_val_data    = m_data(:,start_of_val:end_of_val);
-v_val_lable   = v_lables(start_of_val:end_of_val);
+% m_val_data    = m_data(:,start_of_val:end_of_val);
+% v_val_lable   = v_lables(start_of_val:end_of_val);
 
-m_test_data   = m_data(:,start_of_test:end_of_test);
-v_test_lable  = v_lables(start_of_test:end_of_test);
+% m_test_data   = m_data(:,start_of_test:end_of_test);
+% v_test_lable  = v_lables(start_of_test:end_of_test);
 
 %-- shuffel data
 train_perm = randperm(length(v_train_lable));
-val_perm   = randperm(length(v_val_lable));
+% val_perm   = randperm(length(v_val_lable));
 test_perm  = randperm(length(v_test_lable));
 
 %--change the order
 m_train_data  = m_train_data(:,train_perm);
 v_train_lable = v_train_lable(train_perm);
 
-m_val_data   = m_val_data(:,val_perm);
-v_val_lable  = v_val_lable(val_perm);
+% m_val_data   = m_val_data(:,val_perm);
+% v_val_lable  = v_val_lable(val_perm);
 
-m_test_data   = m_test_data(:,test_perm);
-v_test_lable  = v_test_lable(test_perm);
-%%
-size(m_train_data);
-x = m_train_data(:,1);
-save("../tmp/1",'x');
+% m_test_data   = m_test_data(:,test_perm);
+% v_test_lable  = v_test_lable(test_perm);
+%% save all the data
+
+for ii = 1:size(m_train_data,2)
+    x = m_train_data(:,ii);
+    save("../new_tmp/train/" + num2str(ii), 'x');
+end 
+lable = v_train_lable;
+save("../new_tmp/train/lable" , 'lable');
+
+% for ii = 1:size(m_val_data,2)
+%     x = m_val_data(:,ii);
+%     save("../tmp/val/" + num2str(ii), 'x');
+% end 
+% lable = v_val_lable;
+% save("../tmp/val/lable" , 'lable');
+
+% for ii = 1:size(m_test_data,2)
+%     x = m_test_data(:,ii);
+%     save("../tmp/test/" + num2str(ii), 'x');
+% end 
+% lable = v_test_lable;
+% save("../tmp/test/lable" , 'lable');
+
+
 %% cut the data
 
 % m_train_data  = m_train_data(:,1:500);
