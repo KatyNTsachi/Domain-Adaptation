@@ -21,6 +21,8 @@ function [ c_data_for_classifier, c_description_for_data ] = covWIthConstFeature
 
             %-- if not, calc and save
             else
+            %if true
+            
 
                 %-- substract mean of original events
                 c_data_zero_mean = {};
@@ -44,6 +46,16 @@ function [ c_data_for_classifier, c_description_for_data ] = covWIthConstFeature
                     covEvents(:,:,nn) = c_data_zero_mean_with_waves{nn}'*c_data_zero_mean_with_waves{nn};  
 
                 end
+                
+                            %-- show covarience
+                figure()
+                title(func2str(addConstFeaturesFunc));
+                cov1 = covEvents(:,:,1);
+                colormap(jet);
+                ph = pcolor(cov1);
+                ph.ZData = cov1;
+                colorbar;
+                % 
 
                 res = prepareForClassification( covEvents );
                 save( file_path + ".mat", 'res' );
@@ -55,6 +67,8 @@ function [ c_data_for_classifier, c_description_for_data ] = covWIthConstFeature
             c_description_for_data{ idx } = file_name;
             idx = idx + 1;
 
+
+            
         end
     end
 end

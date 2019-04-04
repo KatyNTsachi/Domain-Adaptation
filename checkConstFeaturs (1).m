@@ -18,7 +18,6 @@ end
 extended_data_Events   = extendData(Events);
 extended_data_F_Events = extendData(F_Events);
 
-
 %% doing covariance correlation and partial correlation
 c_data_for_classifier  = {};
 c_description_for_data = {};
@@ -66,21 +65,21 @@ all_base_functions = ["linear", "gaussian", "polynomial"];
 
 %% extend data rectangular wave
 
-c_data_to_add_waves             = { Events                   };
-c_data_to_add_waves_description = { "Events time with waves" };
+c_data_to_add_waves             = { Events                  , F_Events };
+c_data_to_add_waves_description = { "Events time with waves", "furier Events time with waves" };
 
                                
-waves_size = [ 100 ];
+waves_size = [10, 20, 30, 40, 50, 60, 70, 80, 90 ,100];
 [ c_data_for_classifier_with_rec_waves,...
   c_description_for_data_with_rec_waves] = covWIthConstFeatures(   c_data_to_add_waves,...
                                                                    c_data_to_add_waves_description,...
                                                                    @addTimeWindowChanels, waves_size );
                                                                
-% sigma = [60, 70];
-% [ c_data_for_classifier_with_gau_waves,...
-%   c_description_for_data_with_gau_waves] = covWIthConstFeatures(   c_data_to_add_waves,...
-%                                                                    c_data_to_add_waves_description,...
-%                                                                    @addGaussianWindowCannels, sigma );
+sigma = [10, 20, 30, 40, 50, 60, 70, 80, 90 ,100];
+[ c_data_for_classifier_with_gau_waves,...
+  c_description_for_data_with_gau_waves] = covWIthConstFeatures(   c_data_to_add_waves,...
+                                                                   c_data_to_add_waves_description,...
+                                                                   @addGaussianWindowCannels, sigma );
 
 
 
