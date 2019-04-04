@@ -72,8 +72,6 @@ for subject = 1:num_subjects
     save("../tmp/test/" + num2str(subject) + "/lable" , 'lable');
 end
 
-
-
 %% --Devide to test training and validation          
 m_data   = cell2mat(Events);
 v_lables = kron(vClass, ones(22,1));
@@ -217,6 +215,7 @@ layers = [
 %     
 %     %-- fully connected
 %     fullyConnectedLayer(5000)
+
 %     dropoutLayer
 %     fullyConnectedLayer(5000)
 %     dropoutLayer
