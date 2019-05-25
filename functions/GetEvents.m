@@ -1,7 +1,7 @@
 function [Events, vClass] = GetEvents(subject, day)
 
 %     load BPF.mat;
-    dirPath = '..\..\Dataset\';
+    dirPath = '..\..\DATASET\old_dataset\Dataset_original\';
 %    dirPath = 'C:\Users\Oryair\Desktop\Workarea\BCI\BCICIV_2a_gdf\';
     
     if day == 1

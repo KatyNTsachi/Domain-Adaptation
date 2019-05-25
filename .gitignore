@@ -3,3 +3,7 @@
 *.mat
 /dnn/data*
 *__pycache__*
+/install*
+/save_calc_files*
+
+

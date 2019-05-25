@@ -1,8 +1,8 @@
 function [ events, mat_pca ] = pcaReduceData( events, acc, s_events)
     
-    if exist( "../data/" + s_events + ".mat", 'file' )
-        events  = load(  "../data/" + s_events + ".mat" );
-        mat_pca = load(  "../data/" + s_events + "PCA.mat" );
+    if exist( "./save_calc_files/" + s_events + ".mat", 'file' )
+        events  = load(  "./save_calc_files/" + s_events + ".mat" );
+        mat_pca = load(  "./save_calc_files/" + s_events + "PCA.mat" );
         mat_pca = mat_pca.mat_pca;
         events  = events.events;
         return
@@ -31,7 +31,7 @@ function [ events, mat_pca ] = pcaReduceData( events, acc, s_events)
     parfor ii = 1 : length(events)
         events{ii} = events{ii} * mat_pca( :, 1 : num_of_dim );
     end
-    save( "../data/" + s_events+".mat", 'events' );
-    save( "../data/" + s_events+"PCA.mat", 'mat_pca' );
+    save( "./save_calc_files/" + s_events+".mat", 'events' );
+    save( "./save_calc_files/" + s_events+"PCA.mat", 'mat_pca' );
 end
 

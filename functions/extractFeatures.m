@@ -12,7 +12,7 @@ function [c_data_for_classifier, c_description_for_data] = extractFeatures( even
             
             %check if exists
             file_name = "EF " + func2str(funcs{func_idx}) + " " + events_names{ii}; 
-            file_path = "../data/" + file_name ;
+            file_path = "./save_calc_files/" + file_name ;
             
             %if exist( file_path + ".mat", 'file' )
             if false

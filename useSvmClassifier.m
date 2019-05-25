@@ -1,5 +1,6 @@
 close all
 clear
+addpath("./functions")
 
 %% prepare for calc 
 day               = 1;
