@@ -4,7 +4,9 @@ addpath("./functions");
 addpath("./functions/npy");
 
 table_to_show = [];
-for subject = [9, 14, 15, 16, 18, 21]
+
+% for subject = [9, 14, 15, 16, 18, 21]
+for subject = [14]
 
     %% prepare for calc 
 
@@ -14,8 +16,9 @@ for subject = [9, 14, 15, 16, 18, 21]
 
     %% add the avrg
 
-    Events_with_mean = addAverage(Events, vClass);
+    Events_with_mean            = addAverage(Events, vClass);
     Events_with_mean_difference = addDiffrenceAverage(Events, vClass);
+    Events_with_Claster_mean    = addClusterAverage(Events);
     % add mean to chanells
     % show covarience 
     % do svm
@@ -29,10 +32,10 @@ for subject = [9, 14, 15, 16, 18, 21]
     %% JUST FOR FUN see expirement number tmp_num
 
     event_num = 1;
-    showAllChannels( Events{event_num}, 'event' + num2str(event_num));
-    showAllChannels( Events_with_mean{event_num}(:, 17:end), 'mean' );
-    %showAllChannels( Events_with_pca{event_num}(:, 18:2:end), 'PCA' );
-
+%     showAllChannels( Events{event_num}, 'event' + num2str(event_num));
+%     showAllChannels( Events_with_mean_difference{event_num}(:, 17:end), 'mean' );
+%     showAllChannels( Events_with_Claster_mean{event_num}(:, 17:end), 'PCA' );
+% 
 
     %% show covarience
 
@@ -67,9 +70,15 @@ for subject = [9, 14, 15, 16, 18, 21]
     %                     extended_data_Events                           , extended_data_STFTEvents,...
     %                     extended_data_F_Events                         , extended_data_Events_with_const_fetures};
 
-    events_names    = {"on time series subject_" + num2str(subject), "on time series with mean_" + num2str(subject), "on time series with mean difference_" + num2str(subject) };
+    events_names    = { "on time series subject_" + num2str(subject),...
+                        "on time series with mean_" + num2str(subject),...
+                        "on time series with mean difference_" + num2str(subject),...
+                        "Events with Claster mean_" + num2str(subject) };
 
-    events_cell     = { Events, Events_with_mean, Events_with_mean_difference};
+    events_cell     = { Events,...
+                        Events_with_mean,...
+                        Events_with_mean_difference,...
+                        Events_with_Claster_mean};
 
     %set base functions
     % all_base_functions = ["linear", "gaussian", "polynomial"];
@@ -82,13 +91,13 @@ for subject = [9, 14, 15, 16, 18, 21]
 
     %% show PCA
 
-    pcaReduceCovData(c_data_for_classifier{1}, c_description_for_data{1}, vClass);
-    pcaReduceCovData(c_data_for_classifier{2}, c_description_for_data{2}, vClass);
-    pcaReduceCovData(c_data_for_classifier{3}, c_description_for_data{3}, vClass);
+%     pcaReduceCovData(c_data_for_classifier{1}, c_description_for_data{1}, vClass);
+%     pcaReduceCovData(c_data_for_classifier{2}, c_description_for_data{2}, vClass);
+%     pcaReduceCovData(c_data_for_classifier{3}, c_description_for_data{3}, vClass);
 
     %% show TSNE
 
-    showTSNE2class(  c_data_for_classifier, vClass, c_description_for_data );
+%     showTSNE2class(  c_data_for_classifier, vClass, c_description_for_data );
 
 
     %% just run svm

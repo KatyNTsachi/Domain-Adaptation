@@ -1,4 +1,13 @@
 function [ret_distance] = calcDistanceBetweenCovMat(mean, group_cov)
+%calcDistanceBetweenCovMat calc distance between 
+%one cov mat and a lot of cov mat    
+%
+%   input       
+%               mean         - cov matrix
+%               group_cov    - tensor of cov mat
+%   output    
+%               ret_distance - 1D array of distances between every mat from
+%               the mean
     
     N            = size(group_cov, 3);
     ret_distance = nan(N, 1);
