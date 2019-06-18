@@ -8,7 +8,7 @@ table_to_show = [];
 % for subject = [9, 14, 15, 16, 18, 21]
 for subject = [14]
 
-    %% prepare for calc 
+    %% prepare for calc
 
     %subject = 14;
     [Events, vClass] = getERPEvents(subject);
