@@ -10,7 +10,7 @@ function [ret_p] = projectToTangentSpace(P, P_arrray)
     ret_p            = nan( size(P_arrray) );
     
     %%
-    parfor ii=1:num_of_matrics
+    for ii=1:num_of_matrics
         tmp_pi        = P_arrray(:,:,ii);
         in_log        = p_minus_pow_half * tmp_pi * p_minus_pow_half;
         log_mat       = logm(in_log);

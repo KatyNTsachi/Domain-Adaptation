@@ -1,4 +1,4 @@
-function [current_time_means] = customKmean(t_time)
+function [current_time_means] = customKmean(t_time, init_func, vClass)
    
     MAX_NUM_OF_ITER    = 30;
     counter            = 0;
@@ -29,18 +29,15 @@ function [current_time_means] = customKmean(t_time)
 %     current_time_means(:, :, 1) = t_time(:, :, sample_num1);
 %     current_time_means(:, :, 2) = t_time(:, :, sample_num2);
     
-    rand_idx    = rand(size(t_cov, 3), 1) > 0.5;
-    idx_vector  = 1:size(t_cov, 3);
-    sample_num1 = idx_vector(rand_idx);
-    sample_num2 = idx_vector(~rand_idx);
-        
-    new_cov_means(:, :, 1) = mean(t_cov(:, :, sample_num1), 3);
-    new_cov_means(:, :, 2) = mean(t_cov(:, :, sample_num2), 3);
+
+    [mean1, cluster1, mean2, cluster2] = init_func(t_time, vClass);
+    new_cov_means(:, :, 1) = mean(t_cov(:, :, cluster1), 3);
+    new_cov_means(:, :, 2) = mean(t_cov(:, :, cluster2), 3);
     
     current_time_means = nan( size(t_time, 1), size(t_time, 2), 2 );
     
-    current_time_means(:, :, 1) = mean(t_time(:, :, sample_num1), 3);
-    current_time_means(:, :, 2) = mean(t_time(:, :, sample_num2), 3);
+    current_time_means(:, :, 1) = mean1;
+    current_time_means(:, :, 2) = mean2;
 
 
 
