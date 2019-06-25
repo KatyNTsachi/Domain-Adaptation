@@ -1,4 +1,4 @@
-function [current_time_means] = customKmean(t_time, init_func, vClass)
+function [current_time_means] = customKmeanSub(t_time, init_func, vClass)
    
     MAX_NUM_OF_ITER    = 30;
     counter            = 0;

@@ -1,8 +1,8 @@
-function [cWithAverage] = addClusterAverage(Events, vClass)
+function [cWithAverage] = addClusterAverage(Events, vClass, pointer_to_custom_kmean)
     
     %calc mean of vClass == 1
     mat = cat(3, Events{:});
-    C   = customKmean(mat, @initTag, vClass);
+    C   = pointer_to_custom_kmean(mat, @initTag, vClass);
     mean_1 = C(:, :, 1);
     mean_0 = C(:, :, 2);
 

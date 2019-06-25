@@ -1,4 +1,4 @@
-function [cWithAverage] = addDiffrenceAverageOldData(cInput, vClass)
+function [cWithAverage, c_input_test] = addDiffrenceAverageOldDataTest(cInput, c_input_test, vClass)
     %ADDAVERAGE Summary of this function goes here
     %   Detailed explanation goes here
     
@@ -12,6 +12,12 @@ function [cWithAverage] = addDiffrenceAverageOldData(cInput, vClass)
     for data_i = 1:length(cInput)
 
         cWithAverage{data_i} = [cInput{data_i}, mean_0 - mean_1];
+
+    end
+    
+    for data_i = 1:length(c_input_test)
+
+        c_input_test{data_i} = [c_input_test{data_i}, mean_0 - mean_1];
 
     end
 

@@ -10,10 +10,10 @@ function [string_return] = showSvmResults( input_data, input_lable, input_title,
     
 
     %-- for showing confusion mat
-    predicted_label = predict( Mdl.Trained{1}, input_data' );
-    figure;
-    confusionchart( input_lable, predicted_label,'RowSummary','row-normalized','ColumnSummary','column-normalized');
-    title( input_title );
+%     predicted_label = predict( Mdl.Trained{1}, input_data' );
+%     figure;
+%     confusionchart( input_lable, predicted_label,'RowSummary','row-normalized','ColumnSummary','column-normalized');
+%     title( input_title );
 end
 
 
