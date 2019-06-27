@@ -11,7 +11,9 @@ table_to_show = [];
 
 %% prepare for calc
 
-subjects = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+% subjects = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+subjects = [9];
+
 for subject = subjects
     day     = 1;
     [Events, vClass]  = GetEvents( subject, day );
@@ -19,7 +21,7 @@ for subject = subjects
     %permute
     N = size(vClass,1);
     p = randperm(N);
-
+    tmp_res = zeros(3,1);
     k = 10;
     test_size = int32(linspace(1, N, k+1 ));
     for ii = 1:k
@@ -70,8 +72,9 @@ for subject = subjects
         [Events_train_with_mean_difference,...
          Events_test_with_mean_difference] = addDiffrenceAverageOldDataTest(    Events_train,...
                                                                                 Events_test,...
-                                                                                vClass_train);
-
+                                                                                vClass_train);  
+                                                                            
+                                                                            
         %% doing covariance correlation and partial correlation
         c_data_for_classifier  = {};
         c_description_for_data = {};
@@ -144,15 +147,47 @@ for subject = subjects
         %                              table_to_show)
 
 
-        table_to_show = calcSvmLoss( c_data_for_classifier , vClass,...
-                                     c_description_for_data, all_base_functions,...
-                                     table_to_show);
+%         table_to_show = calcSvmLoss( c_data_for_classifier , vClass,...
+%                                      c_description_for_data, all_base_functions,...
+%                                      table_to_show);
 
-
-
+    t             = templateSVM('Standardize', false, 'KernelFunction', 'linear');
+    Mdl           = fitcecoc( c_data_for_classifier{1}', ...
+                              vClass_train, ...
+                              'Learners', t);
+    predicted_label = predict( Mdl, c_data_for_classifier{2}' );
+    acc = sum(predicted_label == vClass_test) / size(predicted_label,1);
+    tmp_res(1) = tmp_res(1) + acc;
+    
+    
+    
+    t             = templateSVM('Standardize', false, 'KernelFunction', 'linear');
+    Mdl           = fitcecoc( c_data_for_classifier{3}', ...
+                              vClass_train, ...
+                              'Learners', t);
+    predicted_label = predict( Mdl, c_data_for_classifier{4}' );
+    acc = sum(predicted_label == vClass_test) / size(predicted_label,1);
+    tmp_res(2) = tmp_res(2) + acc;
+    
+    
+    
+    t             = templateSVM('Standardize', false, 'KernelFunction', 'linear');
+    Mdl           = fitcecoc( c_data_for_classifier{5}', ...
+                              vClass_train, ...
+                              'Learners', t);
+    predicted_label = predict( Mdl, c_data_for_classifier{6}' );
+    acc = sum(predicted_label == vClass_test) / size(predicted_label,1);
+    tmp_res(3) = tmp_res(3) + acc;
+    
     end
-
+    table_to_show = [table_to_show; [   ...
+                                        c_description_for_data{2} + ":    " + num2str(tmp_res(1)/k),...
+                                        c_description_for_data{4} + ":    " + num2str(tmp_res(2)/k),...
+                                        c_description_for_data{6} + ":    " + num2str(tmp_res(3)/k) ...
+                                    ]
+                    ]
 end
+
 
 disp(table_to_show);
 
