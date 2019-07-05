@@ -1,17 +1,21 @@
-function [Events, vClass] = getERPEvents(subject)
+function [Events, vClass] = getERPEvents(subject, session)
     
-    path    = "../DATASET/new_dataset/data_training/subject_";
+    path    = "../../DATASET/new_dataset2/";
 
-    path_X = path + num2str(subject) + "_X.npy";
-    path_y = path + num2str(subject) + '_y.npy';
+    path_X = path        + num2str(subject) + "session_" + num2str(session) + ".mat";
+    path_y = path + "y_" + num2str(subject) + "session_" + num2str(session) + ".mat";
+    
+    tmp_Events = load(path_X);
+    vClass     = load(path_y);
 
-    tmp_Events = readNPY(path_X);
-    vClass     = readNPY(path_y);
-
+    tmp_Events = tmp_Events.X;
+    vClass     = vClass.y';
+    vClass     = vClass + 1;
+    
     % put each event in cell
     Events = {};
-    for i=1:size(tmp_Events,1)
-        Events{i} = squeeze( tmp_Events(i, :, :) )';
+    for ii = 1:size(tmp_Events,1)
+        Events{ii} = squeeze( tmp_Events(ii, :, :) )';
     end
 end
 
