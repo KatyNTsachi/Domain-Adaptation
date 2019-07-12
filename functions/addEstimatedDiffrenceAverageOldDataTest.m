@@ -7,39 +7,14 @@ function [cWithAverage, c_input_test] = addEstimatedDiffrenceAverageOldDataTest(
     sample_num = 200;
     [eigen_vectors, ~, latent] = pca( t_Input(:, :, sample_num) );
     
-    num_of_pca_vectors = 9;
+    num_of_pca_vectors = 16;
     t_Input_pca = nan(size(t_Input, 1), num_of_pca_vectors, size(t_Input, 3));
     for ii = 1:size(t_Input, 3)
         t_Input_pca(:, :, ii) = t_Input(:, :, ii) * eigen_vectors(:, 1:num_of_pca_vectors); 
     end
     
-%     t_Input_pca = t_Input * eigen_vectors; multiple
-%     new_data = t_Input(:, :, sample_num)* eigen_vectors;
-%     figure();   subplot(18,1,1); plot(t_Input(:, :, sample_num)); title('1');
-%                 subplot(18,1,2); plot(new_data                 ); title('2');
-% 
-%     for ii = 3:18
-%         subplot(18,1,ii); plot(new_data(:, ii)); title(num2str(ii) );
-%     end
     t_Input_pca_down_sample = downsample(t_Input_pca, 2);
 
-%     for chanel = 1:16
-%         disp("######################################################")
-%         disp (chanel)
-%         gmfit = fitgmdist(  squeeze(t_Input_pca_down_sample(:, chanel, :))'  , 2         ,...
-%                             'CovarianceType'  , 'diagonal',...
-%                             'SharedCovariance', false   ...
-%                            );
-%         clusterX = cluster(gmfit, squeeze(t_Input_pca_down_sample(:, chanel, :))');
-% 
-%         sum( clusterX == 1 & vClass == 1) / sum( clusterX == 1)
-%         sum( clusterX == 2 & vClass == 2) / sum( clusterX == 2)
-%         
-%         sum( clusterX == 2 & vClass == 1) / sum( clusterX == 2)
-%         sum( clusterX == 1 & vClass == 2) / sum( clusterX == 1)
-% 
-%         
-%     end 
     
     t_cov = nan( size(t_Input_pca_down_sample, 2), size(t_Input_pca_down_sample, 2), size(t_Input_pca_down_sample, 3));
     for ii = 1 : size(t_Input , 3)
@@ -47,8 +22,8 @@ function [cWithAverage, c_input_test] = addEstimatedDiffrenceAverageOldDataTest(
     end
 
     
-    figure(); imagesc(mean(t_cov(:,:,vClass == 2), 3));
-    figure(); imagesc(mean(t_cov(:,:,vClass == 1), 3));
+%     figure(); imagesc(mean(t_cov(:,:,vClass == 2), 3));
+%     figure(); imagesc(mean(t_cov(:,:,vClass == 1), 3));
 
     P = riemannianMean(t_cov, 0.01, 200);
     ret_p = projectToTangentSpace(P, t_cov);
@@ -61,11 +36,42 @@ function [cWithAverage, c_input_test] = addEstimatedDiffrenceAverageOldDataTest(
                        );
     clusterX = cluster(gmfit, flattened_cov');
     
-    sum(clusterX == 2 & vClass == 2) / sum(clusterX == 2)
-    sum(clusterX == 1 & vClass == 1) / sum(clusterX == 1)
+%     sum(clusterX == 2 & vClass == 2) / sum(clusterX == 2)
+%     sum(clusterX == 1 & vClass == 1) / sum(clusterX == 1)
+%     
+%     sum(clusterX == 1 & vClass == 2) / sum(clusterX == 1)
+%     sum(clusterX == 2 & vClass == 1) / sum(clusterX == 2)
+
+    tsne_points = tsne(flattened_cov');
+%     
+%     first_class = 1;
+%     seccond_class = 2;
+%     figure();
+%     scatter( tsne_points(vClass==2,1), tsne_points(vClass==2,2), 100, 'g', 'filled', 'MarkerEdgeColor', 'k' );
+%     hold on;
+%     scatter( tsne_points(clusterX==seccond_class,1), tsne_points(clusterX==seccond_class,2), 10, 'r','filled', 'MarkerEdgeColor', 'k');
+%     title("class 2");
+%     
+%     figure();
+%     scatter( tsne_points(vClass==1,1), tsne_points(vClass==1,2), 100, 'g', 'filled', 'MarkerEdgeColor', 'k' );
+%     hold on;
+%     scatter( tsne_points(clusterX==first_class,1), tsne_points(clusterX==first_class,2), 10, 'r','filled', 'MarkerEdgeColor', 'k');
+%     title("class 1")
+
+    mean1 = mean( t_Input(:, :, clusterX == 1), 3 );
+    mean2 = mean( t_Input(:, :, clusterX == 2), 3 );
     
-    sum(clusterX == 1 & vClass == 2) / sum(clusterX == 1)
-    sum(clusterX == 2 & vClass == 1) / sum(clusterX == 2)
+    mean_diff = mean1 - mean2;
+    
+    cWithAverage = {};
+    
+    for ii = 1:length(cInput)
+        cWithAverage{1, ii} = [cInput{1, ii}, mean_diff]; 
+    end
+    
+    for ii = 1:length(c_input_test)
+        c_input_test{1, ii} = [c_input_test{1, ii}, mean_diff]; 
+    end
     
     
 %%
