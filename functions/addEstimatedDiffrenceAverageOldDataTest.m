@@ -4,7 +4,7 @@ function [cWithAverage, c_input_test] = addEstimatedDiffrenceAverageOldDataTest(
     t_Input = reshape(tmp, size(cInput{1}, 1), size(cInput{1}, 2), size(cInput, 2));
 
 %% display PCA
-    sample_num = 200;
+
     %build pca samples
     vec_of_all_samples = [];
     for ii = 1 : size(t_Input,3)
@@ -18,7 +18,6 @@ function [cWithAverage, c_input_test] = addEstimatedDiffrenceAverageOldDataTest(
         t_Input_pca(:, :, ii) = t_Input(:, :, ii) * eigen_vectors(:, 1:num_of_pca_vectors); 
     end
     
-%     t_Input_pca_down_sample = downsample(t_Input_pca, 2);
     t_Input_pca_down_sample = t_Input_pca;
     
     t_cov = nan( size(t_Input_pca_down_sample, 2), size(t_Input_pca_down_sample, 2), size(t_Input_pca_down_sample, 3));

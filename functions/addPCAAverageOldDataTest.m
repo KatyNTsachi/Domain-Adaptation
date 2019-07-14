@@ -7,26 +7,28 @@ function [cWithAverage, c_input_test] = addPCAAverageOldDataTest(cInput, c_input
     
     mat = cat(3, cInput{:});
     
-    downsampled_mat = downsample(mat, 2);
-
     average_chanels = nan( size(mat, 1), size(mat, 2) );
-    for chanel_num = 1:size(cInput{1},2)
-        tmp = squeeze(downsampled_mat(:, chanel_num, :));
+    
+   for chanel_num = 1:size(cInput{1},2)
+        
+        tmp = squeeze(mat(:, chanel_num, :));
         [eigen_vectors, ~, latent] = pca(tmp');
-        num_of_pca_vectors = 3;
+        
+%         tmp = 10;
+%         figure();
+%         subplot(3,1,1);
+%         plot( eigen_vectors(:, 1:tmp) );
+%         subplot(3,1,2);
+%         plot( mean( eigen_vectors(:, 1:tmp), 2 ) );
+%         subplot(3,1,3);
+%         plot( mean( squeeze( mat(:, chanel_num,:) ), 2 ) );
+        
+        num_of_pca_vectors = 10;
         eigen_vectors_to_use = eigen_vectors(:, 1:num_of_pca_vectors);
-        projected = (tmp' * eigen_vectors_to_use)*eigen_vectors_to_use';
-        tmp = mean(projected, 1);
-        %average_chanels(:, chanel_num) = mean(projected, 1);
-        tmp = upsample(tmp, 2);
-        %tmp = upsample(mean(eigen_vectors_to_use, 2), 2);
-        average_chanels(:, chanel_num) = tmp(1:end-1);
-       
+        average_chanels(:, chanel_num) = mean(eigen_vectors_to_use, 2);
+        
     end
      
-    
-    
-
     mean_1 = average_chanels;
     mean_0 = 0;
 
