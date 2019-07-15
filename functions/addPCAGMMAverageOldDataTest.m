@@ -100,7 +100,7 @@ function [cWithAverage, c_input_test] = addPCAGMMAverageOldDataTest(cInput, c_in
     mean1 = mean( mat(:, :, clusterX == 1), 3 );
     mean2 = mean( mat(:, :, clusterX == 2), 3 );
     
-    mean_diff = mean1 - mean2;
+    mean_diff = -( mean1 - mean2 );
    
     %add mean to every cell
     cWithAverage = {};
