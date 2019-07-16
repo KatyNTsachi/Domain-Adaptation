@@ -18,7 +18,7 @@ function [cWithAverage1, cWithAverage2] = addPCAGMMAverageOldDataTestTwoOptions(
     
 %     sum(latent(1:7)) / sum(latent)
     
-    num_of_pca_vectors = 10;
+    num_of_pca_vectors = 4;
     t_Input_pca = nan(size(mat, 1), num_of_pca_vectors, size(mat, 3));
     
     for ii = 1 : size(mat, 3)
