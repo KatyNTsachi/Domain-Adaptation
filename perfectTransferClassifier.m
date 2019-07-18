@@ -3,8 +3,8 @@ clear;
 clc;
 
 %%
-subjects = [16];
-sessions = [1];
+% subjects = [1];
+% sessions = [1];
 table_to_show = [];
 table_to_show = [...
                  "name", "worst precision", "worst -precision" ,...
@@ -12,11 +12,11 @@ table_to_show = [...
                  "pca GMM precision 1 "   , "pca GMM -precision 1",...
                  "pca GMM precision 2"    , "pca GMM -precision 2",...
                  ];
-subject = 16;
+subject = 1;
 sess    = 1;
 
 %% -arrange data
-[Events, vClass]  = getERPEvents(subject, sess);
+[Events, vClass]  = getERPEventsSpeller(subject);
 EventsMat         = cell2mat(Events);
 
 n_time     = size(Events{1}, 1);
@@ -27,7 +27,7 @@ EventsMat         = reshape(EventsMat, n_time, n_channels, [] );
 %permute
 N = size(vClass,1);
 p = randperm(N);
-k = 10;
+k = 20;
 test_size = int32(linspace(1, N, k+1 ));
 for ii = 1:k
     test_start_i = test_size(ii);
@@ -75,6 +75,7 @@ for ii = 1:k
 end
 
 %% -see average of target
+Events1 = Events;
 
 figure();
 subplot(2, 1, 1);
@@ -147,18 +148,30 @@ all_base_functions = ["linear"];
 
 %% - show TSNE
 figure();
-subplot(1, 3, 1);
+subplot(2, 2, 1);
 showTSNE(c_data_for_classifier{1}, vClass1);
-title('original');
-subplot(1, 3, 2);
+title('TSNE original');
+
+subplot(2, 2, 2);
 showTSNE(c_data_for_classifier{3}, vClass1);
-title('with mean');
-subplot(1, 3, 3);
-showTSNE(c_data_for_classifier{5}, vClass1);
-title('with PCA');
+title('TSNE with mean');
+% subplot(2, 2, 3);
+% showTSNE(c_data_for_classifier{5}, vClass1);
+% title('with PCA');
 
 %% - show pca
 
+% figure();
+subplot(2, 2, 3);
+showPCA(c_data_for_classifier{1}, vClass1);
+title('PCA original');
+
+subplot(2, 2, 4);
+showPCA(c_data_for_classifier{3}, vClass1);
+title('PCA with mean');
+% subplot(2, 2, 3);
+% showPCA(c_data_for_classifier{5}, vClass1);
+% title('with PCA');
 
 
 
@@ -221,15 +234,29 @@ function [] = showTSNE(flattened_cov, vClass)
     class_1 = 1;
     class_2 = 2;
 
-    scatter( tsne_points(vClass == class_1, 1), tsne_points(vClass == class_1, 2), 100, 'r', 'filled', 'MarkerEdgeColor', 'k' );
+    scatter( tsne_points(vClass == class_1, 1), tsne_points(vClass == class_1, 2), 30, 'r', 'filled', 'MarkerEdgeColor', 'k' );
     hold on;
-    scatter( tsne_points(vClass == class_2, 1), tsne_points(vClass == class_2, 2), 100, 'b', 'filled', 'MarkerEdgeColor', 'k' );
+    scatter( tsne_points(vClass == class_2, 1), tsne_points(vClass == class_2, 2), 30, 'b', 'filled', 'MarkerEdgeColor', 'k' );
     hold on;
-    legend('not target', 'target');
+%     legend('not target', 'target');
     
 end
 
+function [] = showPCA(flattened_cov, vClass)
 
+    eigen_vectors = pca(flattened_cov');
+    two_components = (flattened_cov' * eigen_vectors(:, 1:2));
+    % firsst session
+    class_1 = 1;
+    class_2 = 2;
+
+    scatter( two_components(vClass == class_1, 1), two_components(vClass == class_1, 2), 30, 'r', 'filled', 'MarkerEdgeColor', 'k' );
+    hold on;
+    scatter( two_components(vClass == class_2, 1), two_components(vClass == class_2, 2), 30, 'b', 'filled', 'MarkerEdgeColor', 'k' );
+    hold on;
+%     legend('not target', 'target');
+    
+end
 
 function [pre1, pre2] = calPrecision(X, X_test,y, y_test, data_name)
     
