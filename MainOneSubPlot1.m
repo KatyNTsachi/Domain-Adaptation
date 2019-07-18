@@ -1,13 +1,11 @@
-% close all
+close all
 clear
 
-addpath('../');
-addpath('../RiemannianTools/');
-addpath('./py.BI.EEG.2013-GIPSA-master/');
+load '../DATASET/new_dataset2_2/10session_1.mat'
+load '../DATASET/new_dataset2_2/y_10session_1.mat'
 
-%%
-% load Subject4Session1.mat
-load Subject18Session1.mat
+mX = X;
+vY = y;
 Data = 1e6 * mX;
 Data = Data - mean(Data, 3);
 
@@ -23,7 +21,7 @@ mE2 = squeeze( mean(Data(:,1:16,:), 1) );
 mP = nan(size(mE));
 for ii = 1 : 16
     mX       = squeeze(Data(:,ii,:));
-    mP(ii,:) = pca(mX, 'NumComponents', 1);
+    mP(ii,:) = mean(mX);
 end
 
 
@@ -40,7 +38,7 @@ for ll = 1 : L
 end
 
 %%
-mX = CovsToVecs(cat(3, Covs{:}));
+mX = symetric2Vec(cat(3, Covs{:}));
 
 %%
 % mZ = tsne(mX')';
