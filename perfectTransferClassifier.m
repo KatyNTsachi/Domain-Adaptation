@@ -12,7 +12,7 @@ table_to_show = [...
                  "pca GMM precision 1 "   , "pca GMM -precision 1",...
                  "pca GMM precision 2"    , "pca GMM -precision 2",...
                  ];
-subject = 15;
+subject = 1;
 sess    = 1;
 
 %% -arrange data
@@ -76,6 +76,7 @@ end
 
 %% -see average of target
 Events1 = Events;
+vClass1 = vClass;
 
 figure();
 subplot(2, 1, 1);
