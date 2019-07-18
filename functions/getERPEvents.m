@@ -1,6 +1,6 @@
 function [Events, vClass] = getERPEvents(subject, session)
     
-    path    = "../../DATASET/new_dataset2/";
+    path    = "../../DATASET/new_dataset2_2/";
 
     path_X = path        + num2str(subject) + "session_" + num2str(session) + ".mat";
     path_y = path + "y_" + num2str(subject) + "session_" + num2str(session) + ".mat";
@@ -14,8 +14,9 @@ function [Events, vClass] = getERPEvents(subject, session)
     
     % put each event in cell
     Events = {};
+%     remove_channel = 17;
     for ii = 1:size(tmp_Events,1)
-        Events{ii} = squeeze( tmp_Events(ii, :, :) )';
+        Events{ii} = squeeze( tmp_Events(ii, 1:16, :) )';
     end
 end
 

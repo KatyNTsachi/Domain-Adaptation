@@ -12,11 +12,11 @@ table_to_show = [...
                  "pca GMM precision 1 "   , "pca GMM -precision 1",...
                  "pca GMM precision 2"    , "pca GMM -precision 2",...
                  ];
-subject = 1;
+subject = 15;
 sess    = 1;
 
 %% -arrange data
-[Events, vClass]  = getERPEventsSpeller(subject);
+[Events, vClass]  = getERPEvents(subject, sess);
 EventsMat         = cell2mat(Events);
 
 n_time     = size(Events{1}, 1);
@@ -29,7 +29,9 @@ N = size(vClass,1);
 p = randperm(N);
 k = 20;
 test_size = int32(linspace(1, N, k+1 ));
+
 for ii = 1:k
+    
     test_start_i = test_size(ii);
     test_end_i   = test_size(ii + 1);
 
@@ -59,8 +61,6 @@ for ii = 1:k
     Events1 = mat2cell(EventsMat_train, n_time, rowDest_train);
     Events2  = mat2cell(EventsMat_test , n_time,  rowDest_test);
 
-
-
     %- extract relevant classes
     class_1 = 1;
     class_2 = 2;
@@ -80,7 +80,7 @@ Events1 = Events;
 figure();
 subplot(2, 1, 1);
 plot( getMean(Events1, vClass1) );
-
+legend();
 subplot(2, 1, 2);
 plot( getMean(Events2, vClass2) );
 
