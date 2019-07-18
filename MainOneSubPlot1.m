@@ -1,8 +1,8 @@
 close all
 clear
 
-load '../DATASET/new_dataset2_2/10session_1.mat'
-load '../DATASET/new_dataset2_2/y_10session_1.mat'
+load '../DATASET/new_dataset2_2/15session_1.mat'
+load '../DATASET/new_dataset2_2/y_15session_1.mat'
 
 mX = X;
 vY = y;
@@ -12,16 +12,15 @@ Data = Data - mean(Data, 3);
 L       = size(Data, 1);
 Covs{L} = [];
 
-vIdx = vY == 1;
+vIdx = vY == 2;
 
 mE  = squeeze( mean(Data(vIdx,1:16,:), 1) );
-mE2 = squeeze( mean(Data(:,1:16,:), 1) );
 
 %%
 mP = nan(size(mE));
 for ii = 1 : 16
     mX       = squeeze(Data(:,ii,:));
-    mP(ii,:) = mean(mX);
+    mP(ii,:) = pca(mX, 'NumComponents', 1);	
 end
 
 
@@ -31,7 +30,7 @@ for ll = 1 : L
 
 %     mXX = mXi;
     
-    mXX = [mP;
+    mXX = [mE;
            mXi];
            
     Covs{ll} = cov(mXX');
