@@ -16,8 +16,9 @@ for subject = 1:7
 
         vIdx = vY == 1;
 
-        mE  = squeeze( mean(Data(vIdx,1:16,:), 1) );
-
+        mE1 = squeeze( mean(Data(vIdx,1:16,:), 1) );
+        mE2 = squeeze( mean(Data(vIdx == false,1:16,:), 1) );
+        mE = mE1 - mE2;
 
 
         %%
