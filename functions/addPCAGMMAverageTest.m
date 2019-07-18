@@ -1,11 +1,11 @@
-function [cWithAverage1, cWithAverage2] = addPCAGMMAverageOldDataTestTwoOptions(cInput, vClass)
+function [cWithAverage1, cWithAverage2] = addPCAGMMAverageTest(cInput1, cInput2, vClass1, vClass2)
     %ADDAVERAGE Summary of this function goes here
     %   Detailed explanation goes here
     
     %calc mean of vClass == 1
     
-    
-    mat = cat(3, cInput{:});
+    all_cInput = {cInput1{:} cInput2{:}};
+    mat = cat(3, all_cInput{:});
     vec_of_all_samples = [];
     
     for ii = 1 : size(mat,3)
@@ -16,9 +16,7 @@ function [cWithAverage1, cWithAverage2] = addPCAGMMAverageOldDataTestTwoOptions(
     
     [eigen_vectors, ~, latent] = pca(vec_of_all_samples');
     
-%     sum(latent(1:7)) / sum(latent)
-    
-    num_of_pca_vectors = 4;
+    num_of_pca_vectors = 10;
     t_Input_pca = nan(size(mat, 1), num_of_pca_vectors, size(mat, 3));
     
     for ii = 1 : size(mat, 3)
@@ -37,17 +35,8 @@ function [cWithAverage1, cWithAverage2] = addPCAGMMAverageOldDataTestTwoOptions(
         
         tmp = squeeze(t_Input_pca(:, chanel_num, :));
         [eigen_vectors, ~, latent] = pca(tmp');
-        
-%         tmp = 10;
-%         figure();
-%         subplot(3,1,1);
-%         plot( eigen_vectors(:, 1:tmp) );
-%         subplot(3,1,2);
-%         plot( mean( eigen_vectors(:, 1:tmp), 2 ) );
-%         subplot(3,1,3);
-%         plot( mean( squeeze( mat(:, chanel_num,:) ), 2 ) );
-        
-        num_of_pca_vectors = 10;
+               
+        num_of_pca_vectors = 9;
         eigen_vectors_to_use = eigen_vectors(:, 1:num_of_pca_vectors);
         average_chanels(:, chanel_num) = mean(eigen_vectors_to_use, 2);
         
@@ -64,7 +53,7 @@ function [cWithAverage1, cWithAverage2] = addPCAGMMAverageOldDataTestTwoOptions(
     end
     
     
-    flattened_cov = symetric2Vec(t_cov);
+    flattened_cov = prepareForClassification(t_cov);
     
     gmfit = fitgmdist(  flattened_cov'       , 2         ,...
                         'CovarianceType'     , 'diagonal',...
@@ -73,45 +62,26 @@ function [cWithAverage1, cWithAverage2] = addPCAGMMAverageOldDataTestTwoOptions(
                        );
     clusterX = cluster(gmfit, flattened_cov');
 
-    
-%     sum(clusterX == 2 & vClass == 2) / sum(clusterX == 2)
-%     sum(clusterX == 1 & vClass == 1) / sum(clusterX == 1)
-%     
-%     sum(clusterX == 1 & vClass == 2) / sum(clusterX == 1)
-%     sum(clusterX == 2 & vClass == 1) / sum(clusterX == 2)
-
-%     tsne_points = tsne(flattened_cov');
-%     
-%     first_class = 1;
-%     seccond_class = 2;
-%     figure();
-%     scatter( tsne_points(vClass==2,1), tsne_points(vClass==2,2), 100, 'g', 'filled', 'MarkerEdgeColor', 'k' );
-%     hold on;
-%     scatter( tsne_points(clusterX==seccond_class,1), tsne_points(clusterX==seccond_class,2), 10, 'r','filled', 'MarkerEdgeColor', 'k');
-%     title("class 2");
-%     
-%     figure();
-%     scatter( tsne_points(vClass==1,1), tsne_points(vClass==1,2), 100, 'g', 'filled', 'MarkerEdgeColor', 'k' );
-%     hold on;
-%     scatter( tsne_points(clusterX==first_class,1), tsne_points(clusterX==first_class,2), 10, 'r','filled', 'MarkerEdgeColor', 'k');
-%     title("class 1")
-    
-    
     mean1 = mean( mat(:, :, clusterX == 1), 3 );
     mean2 = mean( mat(:, :, clusterX == 2), 3 );
     
-    mean_diff = -( mean1 - mean2 );
+    mean_diff = ( mean1 - mean2 );
    
     %add mean to every cell
     cWithAverage1 = {};
     cWithAverage2 = {};
-    for data_i = 1:length(cInput)
+    for data_i = 1:length(cInput1)
 
-        cWithAverage1{data_i} = [cInput{data_i}, mean_diff];
-        cWithAverage2{data_i} = [cInput{data_i}, -mean_diff];
+        cWithAverage1{data_i} = [cInput1{data_i}, mean_diff];
+        
     end
     
-   
+   for data_i = 1:length(cInput2)
+
+       cWithAverage2{data_i} = [cInput2{data_i}, mean_diff];
+        
+    end
+
 
 end
 
