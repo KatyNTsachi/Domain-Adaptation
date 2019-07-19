@@ -1,4 +1,4 @@
-function [cWithAverage1, cWithAverage2] = addPCAAverageTest(cInput1, cInput2, vClass1, vClass2)
+function [cWithAverage1, cWithAverage2] = addPCAAverageTest(cInput1, cInput2)
     %ADDAVERAGE Summary of this function goes here
     %   Detailed explanation goes here
     

@@ -3,10 +3,10 @@ function [cWithAverage] = addAverageSub(cInput, vClass)
     %   Detailed explanation goes here
     
     %calc mean of vClass == 1
-    mat = cat(3, cInput{:});
+    mat    = cat(3, cInput{:});
     mean_1 = mean(mat(:, :, vClass==1 ), 3);
     mean_2 = mean(mat(:, :, vClass==2 ), 3);
-    mean_diff = mean_1 + mean_2;
+    mean_diff = mean_1 - mean_2;
 
     %add mean to every cell
     cWithAverage = {};

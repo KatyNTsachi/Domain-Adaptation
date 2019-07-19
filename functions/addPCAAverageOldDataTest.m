@@ -30,19 +30,19 @@ function [cWithAverage, c_input_test] = addPCAAverageOldDataTest(cInput, c_input
     end
      
     mean_1 = average_chanels;
-    mean_0 = 0;
-
+   
+    mean_dif = mean_1;
     %add mean to every cell
     cWithAverage = {};
     for data_i = 1:length(cInput)
 
-        cWithAverage{data_i} = [cInput{data_i}, mean_0 - mean_1];
+        cWithAverage{data_i} = [cInput{data_i}, mean_dif];
 
     end
     
     for data_i = 1:length(c_input_test)
 
-        c_input_test{data_i} = [c_input_test{data_i}, mean_0 - mean_1];
+        c_input_test{data_i} = [c_input_test{data_i}, mean_dif];
 
     end
 

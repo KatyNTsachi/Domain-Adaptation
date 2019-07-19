@@ -14,11 +14,9 @@ table_to_show = [...
                  "pca GMM precision"      ,... 
                  ];
              
-subjects = 1:7;
-sessions = 1:8;
+subjects = 8:24;
+sessions = 1:1;
 
-subjects = [4];
-sessions = [1];
 
 for subject = subjects
     for sess = sessions 
