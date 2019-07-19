@@ -1,17 +1,21 @@
 close all
 clear
+addpath("./functions");
+
 %%
-for subject = 1:7
-    for sess = 1:8
+for subject = 8:24 %1:7
+    for sess = 1:1 %1:8
         load("../DATASET/new_dataset2_2/"   + num2str(subject) + "session_" + num2str(sess) + ".mat");
         load("../DATASET/new_dataset2_2/y_" + num2str(subject) + "session_" + num2str(sess) + ".mat");
 
         mX = X;
         vY = y;
         Data = 1e6 * mX;
+        %% 
         Data = Data - mean(Data, 3);
 
         L       = size(Data, 1);
+        clear Covs;
         Covs{L} = [];
 
         vIdx = vY == 1;
@@ -40,6 +44,6 @@ for subject = 1:7
         % mZ = tsne(mX')';
         mZ = pca(mX, 'NumComponents', 2)';
         figure; scatter(mZ(1,:), mZ(2,:), 100, vY,  'Fill', 'MarkerEdgeColor', 'k');
-
+        title("subject: " + num2str(subject) + " session: " + num2str(sess));
     end
 end
