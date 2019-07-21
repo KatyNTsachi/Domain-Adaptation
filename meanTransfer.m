@@ -28,9 +28,9 @@ table_to_show = [...
                  "our pca vs our pca "   ,... 
                  ];
 for subject1 = 1:7
-    for sess1 = 1:2
-        for subject2 = 1:7
-            for sess2 = 1:2
+    for sess1 = 1:8
+        for subject2 = subject1:7
+            for sess2 = 1:8
                 
                 if subject1 == subject2 & sess1 == sess2
                     continue

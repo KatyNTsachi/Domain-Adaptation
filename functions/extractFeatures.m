@@ -12,7 +12,7 @@ function [c_data_for_classifier, c_description_for_data] = extractFeatures( even
 
 
             vectors_of_features = funcs{func_idx}(events_cell{ii});
-            v_classifier = prepareForClassification( vectors_of_features );
+            v_classifier = prepareForClassification( vectors_of_features , false);
               
             description_of_classifier_and_fetures = funcs_names{func_idx} + events_names{ii};
             

@@ -1,4 +1,4 @@
-function [cov_projected_on_mean] = prepareForClassification( tesor_of_all_events )
+function [cov_projected_on_mean] = prepareForClassification( tesor_of_all_events, remove_extra )
     % prepare data for classifier.
     % each column of data is a sample
     % each row of data is a feature
@@ -19,6 +19,6 @@ function [cov_projected_on_mean] = prepareForClassification( tesor_of_all_events
         cov_projected_on_mean(:,:,ii) =  log_mat ;
     end
     
-    cov_projected_on_mean = symetric2Vec( cov_projected_on_mean );
+    cov_projected_on_mean = symetric2Vec( cov_projected_on_mean, remove_extra );
         
 end

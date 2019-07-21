@@ -1,4 +1,4 @@
-function [res_vec] = symetric2Vec( input_symetric_tensor )
+function [res_vec] = symetric2Vec( input_symetric_tensor, remove_extra )
     %input  - input_symetric_tensor
     %output - upper triangle of the mat as vector
     %         and normalize
@@ -10,10 +10,10 @@ function [res_vec] = symetric2Vec( input_symetric_tensor )
     ones_size_of_input     = ones(D, D);
     pattern_for_upper      = triu( ones_size_of_input );
     
-%     if size(input_symetric_tensor, 1) == 32
-%      	pattern_for_upper( :, 17:32) = 0; 
-%         pattern_for_upper( 1:16, 17:32) = eye(16);
-%     end
+    if remove_extra == true & size(input_symetric_tensor, 1) == 32
+     	pattern_for_upper( :, 17:32) = 0; 
+        pattern_for_upper( 1:16, 17:32) = eye(16);
+    end
 
     %we want to extract the factor
     pattern_for_factor     = triu( ones_size_of_input, 1 );
