@@ -18,7 +18,3 @@ function [ret_p] = projectToTangentSpace(P, P_arrray)
     end
     
 end
-backup_M = table_to_show
-save pca_results_CVEP_dataset table_to_show;
-
-load 'pca_results_CVEP_dataset'

@@ -9,6 +9,7 @@ function [Events, vClass] = getERPEvents(subject, session)
     vClass     = load(path_y);
 
     tmp_Events = tmp_Events.X;
+    tmp_Events = tmp_Events - mean(tmp_Events, 3);
     vClass     = vClass.y';
     vClass     = vClass + 1;
     

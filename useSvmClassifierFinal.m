@@ -1,14 +1,14 @@
 close all
 clear
 addpath("./functions");
-addpath("./functions/npy");
-addpath("./functions/clustering");
-
+%%
 
 
 table_to_show = [];
 table_to_show = [table_to_show; [   ...
-                                    "description"                    ,...
+                                    "subject"                        ,...
+                                    "session"                        ,...
+                                    "validationIteration"            ,...
                                     "regular"                        ,...
                                     "with mean"                      ,...                                    
                                     "with PCA mean"                  ,...
@@ -20,15 +20,16 @@ table_to_show = [table_to_show; [   ...
 
 %% prepare for calc
 NUM_OF_DATA = 3;
-subjects = 1:9;
-session = 1:2;
+subjects = 1:7;
+session = 1:8;
 
 for subject = subjects
     
     for sess = session
 
-        [Events, vClass]  = getCVEPEvents(subject, sess);
-        
+        %[Events, vClass]  = getCVEPEvents(subject, sess);
+        [Events, vClass]  = getERPEvents(subject, sess);
+
         EventsMat         = cell2mat(Events);
 
         n_time     = size(Events{1}, 1);
@@ -137,43 +138,47 @@ for subject = subjects
 
 
             %% just run svm
-
+            tmp_res = zeros(NUM_OF_DATA, 1);
+            
             for res_idx = 1 : NUM_OF_DATA
 
-                tmp_res(res_idx) = tmp_res(res_idx) + calPrecision(...
-                                                                    c_data_for_classifier{(res_idx-1)*2+1},...
-                                                                    c_data_for_classifier{(res_idx-1)*2+2},...
-                                                                    vClass_train                          ,...
-                                                                    vClass_test                            ...
-                                                                    );          
+                tmp_res(res_idx) = calPrecision(...
+                                                    c_data_for_classifier{(res_idx-1)*2+1},...
+                                                    c_data_for_classifier{(res_idx-1)*2+2},...
+                                                    vClass_train                          ,...
+                                                    vClass_test                            ...
+                                                );          
             end
 
 
+            tmp_str = [];
+        
+            for tmp_str_num = 1 : NUM_OF_DATA
 
+                tmp_str = [ string(tmp_str) ,...
+                            num2str(tmp_res(tmp_str_num))];
+
+            end
+
+            table_to_show = [table_to_show; [   ...
+                                                num2str(subject),...
+                                                num2str(sess)   ,...
+                                                num2str(ii)     ,...
+                                                tmp_str                                        
+                                            ]
+                            ]
 
             
             
-            
+            disp(table_to_show);
+
         end
         
-        tmp_str = [];
-        
-        for tmp_str_num = 1 : NUM_OF_DATA
-        
-            tmp_str = [ string(tmp_str) ,...
-                        num2str(tmp_res(tmp_str_num)/k)];
-            
-        end
-        
-        table_to_show = [table_to_show; [   ...
-                                            "subject: " + num2str(subject) + "session: " + num2str(sess),...
-                                            tmp_str                                        
-                                        ]
-                        ]
+   
     end
 end
 
-disp(table_to_show);
+save pca_results_ERP_dataset table_to_show;
 
 
 
