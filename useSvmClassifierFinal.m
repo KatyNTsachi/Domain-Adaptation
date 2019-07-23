@@ -20,8 +20,8 @@ table_to_show = [table_to_show; [   ...
 
 %% prepare for calc
 NUM_OF_DATA = 3;
-subjects = 1:1;
-session = 1:1;
+subjects = 1:9;
+session = 1:2;
 
 for subject = subjects
     
