@@ -12,7 +12,7 @@ function [Events, vClass] = getCVEPEvents(subject, session)
     tmp_Events = tmp_Events - mean(tmp_Events, 3);
     
     %two classes
-    vClass = (vClass >= 1 & vClass <= 15) + 1;
+    vClass = (vClass >= 1 & vClass <= 16) + 1;
     
     % put each event in cell
     Events = {};

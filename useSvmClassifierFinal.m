@@ -27,8 +27,8 @@ for subject = subjects
     
     for sess = session
 
-        %[Events, vClass]  = getCVEPEvents(subject, sess);
-        [Events, vClass]  = getERPEvents(subject, sess);
+        [Events, vClass]  = getCVEPEvents(subject, sess);
+%         [Events, vClass]  = getERPEvents(subject, sess);
 
         EventsMat         = cell2mat(Events);
 
