@@ -18,21 +18,27 @@ class DA_Dataset(Dataset):
         """
         self.root_dir = root_dir
        
-        file_path   = self.root_dir + 'labels' + '.mat'
+        file_path   = self.root_dir + 'y' + '.mat'
         y = sio.loadmat(file_path)
-        self.lables = y['lable']
 
+        
+        self.lables = np.transpose( y['y'] )
+        print(np.min(self.lables))
+        print(np.max(self.lables))
+        
     def __len__(self):
         return len(self.lables)
 
     def __getitem__(self, idx):
-        
-        file_path = self.root_dir + str(idx+1) + '.mat'
-        x         = sio.loadmat(file_path)
-        x         = np.transpose( x['x'] )
 
-        lable = self.lables[idx][0]-1
-      
+        file_path = self.root_dir + str(idx) + '.mat'
+        x         = sio.loadmat(file_path)
+        
+        x         = x['X'] 
+
+
+        lable = np.squeeze( self.lables[idx] )
+
     
         sample = {'x': x, 'lable': lable}
       
