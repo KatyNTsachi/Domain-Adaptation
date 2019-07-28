@@ -9,14 +9,15 @@ table_to_show = [];
 for subject = [14]
 
     %% prepare for calc
-
+    sess = 1;
     %subject = 14;
-    [Events, vClass] = getERPEvents(subject);
+    [Events, vClass] = getERPEvents(subject, sess);
 
 
     %% add the avrg
 
     Events_with_mean            = addAverage(Events, vClass);
+
     Events_with_mean_difference = addDiffrenceAverage(Events, vClass);
     Events_with_Claster_mean    = addClusterAverage(Events);
     % add mean to chanells

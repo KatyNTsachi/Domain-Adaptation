@@ -4,7 +4,7 @@ function [cWithAverage, c_test_input] = addAverageTest(cInput, c_test_input, vCl
     
     %calc mean of vClass == 1
     mat = cat(3, cInput{:});
-    mean_1 = mean(mat(:, :, vClass==1 ), 3);
+    mean_1 = mean(mat(:, :, vClass==2 ), 3);
 
     
     %add mean to every cell

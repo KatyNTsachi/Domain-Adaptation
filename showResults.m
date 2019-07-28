@@ -39,12 +39,13 @@ num_of_subjects = size( unique( subject_num ), 1 );
 all_var  = zeros( 3, num_of_subjects);
 all_mean = zeros( 3, num_of_subjects);
 
+unique_subjects = unique( subject_num );
 for data_type = 1:3
     
-    for tmp_subject_num = unique( subject_num )
+    for tmp_subject_num = 1 : length(unique_subjects)
         
         %- get relevant idx
-        relevant_idx = find( subject_num == tmp_subject_num );
+        relevant_idx = find( subject_num == unique_subjects(tmp_subject_num) );
         
         %- get televant data 
         tmp_data = all_res{data_type};
@@ -82,9 +83,6 @@ title('Precision of dataset 1');
 xlabel('Subject');
 ylabel('Precision');
 
-% errorbar(1:length(mean_data_num), mean_data_num, zeros( 1, length(mean_data_num) ), ypos, -ypos, 'o', 'Color', 'g');
-% hold on;
-%errorbar(1:length(regular_data), regular_data_num, zeros( 1, length(regular_data) ), ypos, 'o', 'Color', 'b');
 
 
 

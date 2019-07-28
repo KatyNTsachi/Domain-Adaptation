@@ -6,92 +6,82 @@ addpath("./functions")
 day               = 1;
 subject           = 8;
 [Events, vClass]  = GetEvents( subject, day );
-N                 = length(Events);
-%-- Create STFT Events
-%-- Create Forier Events 
-parfor ii = 1 : N
-    F_Events{ii} = abs( fft( Events{ii} ) );
+
+%% - add waves
+%% extend data rectangular wave
+
+                               
+c_data_for_classifier_with_wavelets = covWIthConstFeatures( Events );
+% figure();
+% plot(c_data_for_classifier_with_wavelets{1});
+
+%% - show cov
+cov_res = covFromCellArrayOfEvents(c_data_for_classifier_with_wavelets);
+
+figure()
+colormap(jet);
+hImg = pcolor(cov_res(:, :, 1));
+set(gca,'YDir','reverse' );
+colorbar;
+title('Cov with Wavelets');
+%% - show waves
+num_chanels_to_show = 5;
+colormap jet;
+cmap=colormap;
+tmp_cmap = [cmap(10,:);cmap(20,:);cmap(60,:);cmap(45,:);cmap(50,:)];
+%tmp_cmap= cmap;
+
+idx=[1,2,28,25,26];
+
+tmp_ii = 1; 
+for ii = idx
+    %tmp_color = mod(ii*10,64);
+    Plot_color=tmp_cmap(mod(tmp_ii,5) + 1,:);   
+    subplot(num_chanels_to_show,1,tmp_ii);
+    plot(c_data_for_classifier_with_wavelets{1}(:,ii), 'Color', Plot_color,'LineWidth',2);
+    set(gca,'xtick',[])
+    set(gca,'ytick',[])
+    if tmp_ii == num_chanels_to_show
+        xlabel('time', 'FontSize',44);
+    end
+    tmp_ii = tmp_ii + 1;
 end
 
-%% preprocessing - add more features
-
-extended_data_Events   = extendData(Events);
-extended_data_F_Events = extendData(F_Events);
 
 
 %% doing covariance correlation and partial correlation
 c_data_for_classifier  = {};
 c_description_for_data = {};
-% funcs       = { @covFromCellArrayOfEvents, @correlationFromCellArrayOfEvents, @partialCorrelationFromCellArrayOfEvents };
-% funcs_names = { "Covariance"             , "Correlation"                    , "Partial Correlation"  };
-funcs       = { @covFromCellArrayOfEvents, @correlationFromCellArrayOfEvents, @partialCorrelationFromCellArrayOfEvents };
-funcs_names = { "Covariance"             , "Correlation"                    , "Partial Correlation"  };
 
-
-% events_names    = { "on time series"                                   , "on STFT transform",...
-%                     "on STFTEvents whole_time"                         , "F Events",...
-%                     "on pca_reduce data Events"                        , "pca reduce data STFTEvents",...
-%                     "on pca_reduce data STFTEvents whole time"         , "pca reduce data F Events",...
-%                     "on extended pca reduce data Events"               , "on extended pca reduce data STFTEvents",...
-%                     "on extended pca reduce data STFTEvents whole time", "on extended pca reduce data F Events",...
-%                     "on extended data Events"                          , "on extended data STFTEvents",...
-%                     "on extended data F Events"                        , "on extended data Events with const fetures"};
-
-% events_cell     = { Events                                         , STFTEvents,...
-%                     STFTEvents_whole_time                          , F_Events,...
-%                     pca_reduce_data_Events                         , pca_reduce_data_STFTEvents,...
-%                     pca_reduce_data_STFTEvents_whole_time          , pca_reduce_data_F_Events,...
-%                     extended_pca_reduce_data_Events                , extended_pca_reduce_data_STFTEvents,...
-%                     extended_pca_reduce_data_STFTEvents_whole_time , extended_pca_reduce_data_F_Events,...
-%                     extended_data_Events                           , extended_data_STFTEvents,...
-%                     extended_data_F_Events                         , extended_data_Events_with_const_fetures};
+funcs       = { @covFromCellArrayOfEvents};
+funcs_names = { "Covariance"             };
 
 
 
-events_names    = { "on time series"                                   , "F Events"                                         ,...
-                    "on extended data Events"                          , "on extended data F Events"};
+events_names    = { 
+                    "on time series",...
+                    "wavelets"      ,...
+                  };
 
-events_cell     = { Events                                         , F_Events                                       ,...
-                    extended_data_Events                           , extended_data_F_Events};
+events_cell     = { 
+                    Events                             ,...
+                    c_data_for_classifier_with_wavelets,...
+                  };
 
 
 
 %set base functions
-% all_base_functions = ["linear", "gaussian", "polynomial"];
-all_base_functions = ["linear", "gaussian", "polynomial"];
+all_base_functions = ["linear"];
 
 %extract the features
 [c_data_for_classifier, c_description_for_data] = extractFeatures( events_cell, events_names,...
-                                                                   funcs, funcs_names, vClass );
+                                                                   funcs, funcs_names );
 
-%% extend data rectangular wave
-
-c_data_to_add_waves             = { Events                   };
-c_data_to_add_waves_description = { "Events time with waves" };
-
-                               
-waves_size = [ 100 ];
-[ c_data_for_classifier_with_rec_waves,...
-  c_description_for_data_with_rec_waves] = covWIthConstFeatures(   c_data_to_add_waves,...
-                                                                   c_data_to_add_waves_description,...
-                                                                   @addTimeWindowChanels, waves_size );
                                                                
-% sigma = [60, 70];
-% [ c_data_for_classifier_with_gau_waves,...
-%   c_description_for_data_with_gau_waves] = covWIthConstFeatures(   c_data_to_add_waves,...
-%                                                                    c_data_to_add_waves_description,...
-%                                                                    @addGaussianWindowCannels, sigma );
 
-
-
-%% create one data
-[ c_combined_data, c_combined_description ] = combineThreeCellArray(   c_data_for_classifier, c_description_for_data,...
-                                                                       c_data_for_classifier_with_rec_waves, c_description_for_data_with_rec_waves,...
-                                                                       c_data_for_classifier_with_gau_waves, c_description_for_data_with_gau_waves);
 
 %% calc svm
 table_to_show = [];
-table_to_show = calcSvmLossTnV( c_combined_data, vClass,...
-                                c_combined_description, all_base_functions,...
-                                table_to_show);
+table_to_show = calcSvmLossTnV( c_data_for_classifier , vClass,...
+                                c_description_for_data, table_to_show);
 

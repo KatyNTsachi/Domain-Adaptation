@@ -15,6 +15,8 @@ parfor ii = 1 : N
     F_Events{ii} = abs( fft( Events{ii} ) );
 end
 
+
+
 %% preprocessing - dimentionality reduction
 acc = 0.99;
 [pca_reduce_data_Events               , pca_mat1] = pcaReduceData( Events               , acc, "EventsAfterPca");

@@ -209,5 +209,170 @@ colormap(jet);
 
 pcolor(wave_cov);
 set(gca,'YDir','reverse' );
-set(hAxes,'YDir','reverse')
+set(hAxes,'YDir','reverse');
+
+%% - first dataset
+day               = 1;
+subject           = 8;
+[Events, vClass]  = GetEvents( subject, day );
+% [Events, vClass] = getERPEvents(subject, sess);
+
+Events_with_mean = addAverage(Events, vClass);
+m = Events_with_mean{1}(:,23:44);
+f = figure();
+plot( m );
+set(gca,'xtick',[])
+set(gca,'ytick',[])
+
+xlabel('time', 'FontSize', 32);
+xlim ([1 513]);
+
+%% show TSNE of two sessions
+% -get events 1 
+subject1 = 16;
+sess1    = 1;
+
+epsilon = 0.01;
+max_iter = 100;
+
+[Events1, vClass1]  = getERPEvents(subject1, sess1);
+% Events1             = addDiffrenceAverage(Events1, vClass1);
+cov1 = covFromCellArrayOfEvents(Events1);
+mean_of_cov1 = riemannianMean(cov1, epsilon, max_iter);
+
+cov_transformed = covFromCellArrayOfEvents(Events1_transformed);
+
+tmp_cov = cov1;
+flattened_cov = prepareForClassification(tmp_cov, false);
+tsne_points = tsne(flattened_cov');
+vClass_one = vClass1;
+
+figure();
+scatter( tsne_points(vClass_one == 1, 1), tsne_points(vClass_one == 1, 2), 250, 'r', 'filled', 'MarkerEdgeColor', 'k' );
+hold on;
+scatter( tsne_points(vClass_one == 2, 1), tsne_points(vClass_one == 2, 2), 250, 'y', 'filled', 'MarkerEdgeColor', 'k' );
+
+legend( 'subject 1 non-target',...
+        'subject 1 target'    ,...
+        'FontSize'            ,...
+        30);
+title('TSNE - one subjects ','FontSize', 30 );
+set(gca,'xtick',[]);
+set(gca,'ytick',[]);
+axis off
+
+
+%% show TSNE of two sessions
+% -get events 1 
+subject1 = 16;
+sess1    = 1;
+subject2 = 18;
+sess2    = 1;
+
+epsilon = 0.01;
+max_iter = 100;
+
+[Events1, vClass1]  = getERPEvents(subject1, sess1);
+Events1             = addDiffrenceAverage(Events1, vClass1);
+cov1 = covFromCellArrayOfEvents(Events1);
+mean_of_cov1 = riemannianMean(cov1, epsilon, max_iter);
+
+
+% -get events 2
+[Events2, vClass2]  = getERPEvents(subject2, sess2);
+Events2             = addDiffrenceAverage(Events2, vClass2);
+
+cov2 = covFromCellArrayOfEvents(Events2);
+mean_of_cov2 = riemannianMean(cov2, epsilon, max_iter);
+
+% % -transorm events 1 to events 2
+% T = ( mean_of_cov2 * ( (mean_of_cov1)^(-1) ) ) ^ (1 / 2);
+% Events1_transformed = {};
+% for ii = 1 : length(Events1)
+%     Events1_transformed{ii} = (T * Events1{ii}')';
+% end
+
+cov_transformed = covFromCellArrayOfEvents(Events1_transformed);
+
+
+% before
+tmp_cov = cat(3, cov1, cov2);
+flattened_cov = prepareForClassification(tmp_cov, false);
+tsne_points = tsne(flattened_cov');
+vClass_one = zeros(size(flattened_cov, 2), 1);
+vClass_one = cat(1, vClass1, vClass2 + 2 );
+class_1 = 1;
+class_2 = 2;
+
+figure();
+scatter( tsne_points(vClass_one == 1, 1), tsne_points(vClass_one == 1, 2), 100, 'r', 'filled', 'MarkerEdgeColor', 'k' );
+hold on;
+scatter( tsne_points(vClass_one == 2, 1), tsne_points(vClass_one == 2, 2), 100, 'y', 'filled', 'MarkerEdgeColor', 'k' );
+hold on;
+scatter( tsne_points(vClass_one == 3, 1), tsne_points(vClass_one == 3, 2), 100, 'b', 'filled', 'MarkerEdgeColor', 'k' );
+hold on;
+scatter( tsne_points(vClass_one == 4, 1), tsne_points(vClass_one == 4, 2), 100, 'g', 'filled', 'MarkerEdgeColor', 'k' );
+
+legend( 'subject 1 non-target',...
+        'subject 1 target'    ,...
+        'subject 2 non-target',...
+        'subject 2 target'    ,...
+        'FontSize'            ,...
+        36);
+title('TSNE - Two subjects','FontSize', 36 );
+set(gca,'xtick',[]);
+set(gca,'ytick',[]);
+axis off
+
+%                 %after
+%                 tmp_cov = cat(3, cov_transformed, cov2);
+%                 flattened_cov = prepareForClassification(tmp_cov);
+%                 tsne_points = tsne(flattened_cov');
+%                 vClass_one = zeros(size(flattened_cov, 2), 1);
+%                 vClass_one(1:size(cov2,3)) = 1;
+%                 class_1 = 1;
+%                 class_2 = 2;
+% 
+%                 figure();
+%                 scatter( tsne_points(vClass_one == 1, 1), tsne_points(vClass_one == 1, 2), 30, 'r', 'filled', 'MarkerEdgeColor', 'k' );
+%                 hold on;
+%                 scatter( tsne_points(vClass_one ~= 1, 1), tsne_points(vClass_one ~= 1, 2), 30, 'b', 'filled', 'MarkerEdgeColor', 'k' );
+
+
+
+
+%% PCA
+subject1 = 16;
+sess1    = 1;
+
+[Events, vClass]  = getERPEvents(subject1, sess1);
+
+NUM = 10;
+Events = addPCAAverage(Events);
+
+figure();
+for ii = 1:NUM
+    subplot(NUM, 1, ii);
+    plot(Events{ii}(:,1));
+    set(gca,'xtick',[]);
+    set(gca,'ytick',[]);
+%     axis off
+end
+xlabel('time', 'FontSize',25);
+
+figure();
+plot(Events{ii}(:,20));
+xlabel('time', 'FontSize',25);
+
+%% - problem with pca
+x1 = randn(700, 1);
+x2 = x1*1 + randn(700, 1);
+x = [x1, x2];
+figure();
+scatter(x(:,1), x(:,2), 100, 'r', 'filled', 'MarkerEdgeColor', 'k');
+xlim([-10, 10]);
+ylim([-10, 10]);
+set(gca,'xtick',[]);
+set(gca,'ytick',[]);
+axis off
 
