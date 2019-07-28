@@ -2,7 +2,6 @@ close all
 clear
 addpath("./functions");
 %
-
 NUM_OF_DATA = 5;
 table_to_show = [];
 table_to_show = [table_to_show; [   ...
