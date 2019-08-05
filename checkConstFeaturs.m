@@ -4,7 +4,7 @@ addpath("./functions")
 
 %% prepare for calc 
 day               = 1;
-subject           = 8;
+subject           = 1;
 [Events, vClass]  = GetEvents( subject, day );
 
 %% - add waves
@@ -16,36 +16,36 @@ c_data_for_classifier_with_wavelets = covWIthConstFeatures( Events );
 % plot(c_data_for_classifier_with_wavelets{1});
 
 %% - show cov
-cov_res = covFromCellArrayOfEvents(c_data_for_classifier_with_wavelets);
-
-figure()
-colormap(jet);
-hImg = pcolor(cov_res(:, :, 1));
-set(gca,'YDir','reverse' );
-colorbar;
-title('Cov with Wavelets');
+% cov_res = covFromCellArrayOfEvents(c_data_for_classifier_with_wavelets);
+% 
+% figure()
+% colormap(jet);
+% hImg = pcolor(cov_res(:, :, 1));
+% set(gca,'YDir','reverse' );
+% colorbar;
+% title('Cov with Wavelets');
 %% - show waves
-num_chanels_to_show = 5;
-colormap jet;
-cmap=colormap;
-tmp_cmap = [cmap(10,:);cmap(20,:);cmap(60,:);cmap(45,:);cmap(50,:)];
-%tmp_cmap= cmap;
-
-idx=[1,2,28,25,26];
-
-tmp_ii = 1; 
-for ii = idx
-    %tmp_color = mod(ii*10,64);
-    Plot_color=tmp_cmap(mod(tmp_ii,5) + 1,:);   
-    subplot(num_chanels_to_show,1,tmp_ii);
-    plot(c_data_for_classifier_with_wavelets{1}(:,ii), 'Color', Plot_color,'LineWidth',2);
-    set(gca,'xtick',[])
-    set(gca,'ytick',[])
-    if tmp_ii == num_chanels_to_show
-        xlabel('time', 'FontSize',44);
-    end
-    tmp_ii = tmp_ii + 1;
-end
+% num_chanels_to_show = 5;
+% colormap jet;
+% cmap=colormap;
+% tmp_cmap = [cmap(10,:);cmap(20,:);cmap(60,:);cmap(45,:);cmap(50,:)];
+% %tmp_cmap= cmap;
+% 
+% idx=[1,2,28,25,26];
+% 
+% tmp_ii = 1; 
+% for ii = idx
+%     %tmp_color = mod(ii*10,64);
+%     Plot_color=tmp_cmap(mod(tmp_ii,5) + 1,:);   
+%     subplot(num_chanels_to_show,1,tmp_ii);
+%     plot(c_data_for_classifier_with_wavelets{1}(:,ii), 'Color', Plot_color,'LineWidth',2);
+%     set(gca,'xtick',[])
+%     set(gca,'ytick',[])
+%     if tmp_ii == num_chanels_to_show
+%         xlabel('time', 'FontSize',44);
+%     end
+%     tmp_ii = tmp_ii + 1;
+% end
 
 
 
@@ -82,6 +82,7 @@ all_base_functions = ["linear"];
 
 %% calc svm
 table_to_show = [];
-table_to_show = calcSvmLossTnV( c_data_for_classifier , vClass,...
-                                c_description_for_data, table_to_show);
+table_to_show = calcSvmLossTnV( c_data_for_classifier , vClass            ,...
+                                c_description_for_data, all_base_functions,...
+                                table_to_show)
 

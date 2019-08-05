@@ -212,6 +212,23 @@ set(gca,'YDir','reverse' );
 set(hAxes,'YDir','reverse');
 
 %% - first dataset
+day               = 3;
+subject           = 1;
+[Events, vClass]  = getERPEvents( subject, day );
+% [Events, vClass] = getERPEvents(subject, sess);
+
+Events_with_mean = addAverage(Events, vClass);
+m = Events_with_mean{1}(:,17:32);
+f = figure();
+plot( m );
+set(gca,'xtick',[])
+set(gca,'ytick',[])
+title('Average of Non-target', 'FontSize', 32);
+% title('Average of target', 'FontSize', 32);
+xlabel('time', 'FontSize', 32);
+xlim ([1 513]);
+
+%% - seccond dataset
 day               = 1;
 subject           = 8;
 [Events, vClass]  = GetEvents( subject, day );
@@ -223,11 +240,14 @@ f = figure();
 plot( m );
 set(gca,'xtick',[])
 set(gca,'ytick',[])
+title('Average of target', 'FontSize', 32);
+% title('Average of Non-target', 'FontSize', 32);
 
 xlabel('time', 'FontSize', 32);
 xlim ([1 513]);
 
-%% show TSNE of two sessions
+
+%% show TSNE of one session with mean
 % -get events 1 
 subject1 = 16;
 sess1    = 1;
@@ -236,16 +256,19 @@ epsilon = 0.01;
 max_iter = 100;
 
 [Events1, vClass1]  = getERPEvents(subject1, sess1);
-% Events1             = addDiffrenceAverage(Events1, vClass1);
-cov1 = covFromCellArrayOfEvents(Events1);
-mean_of_cov1 = riemannianMean(cov1, epsilon, max_iter);
+Events1             = addDiffrenceAverage(Events1, vClass1);
+cov1                = covFromCellArrayOfEvents(Events1);
+% mean_of_cov1 = riemannianMean(cov1, epsilon, max_iter);
 
-cov_transformed = covFromCellArrayOfEvents(Events1_transformed);
+% cov_transformed = covFromCellArrayOfEvents(Events1_transformed);
 
 tmp_cov = cov1;
 flattened_cov = prepareForClassification(tmp_cov, false);
 tsne_points = tsne(flattened_cov');
+% tsne_points = pca(flattened_cov,'NumComponents', 2);
+
 vClass_one = vClass1;
+
 
 figure();
 scatter( tsne_points(vClass_one == 1, 1), tsne_points(vClass_one == 1, 2), 250, 'r', 'filled', 'MarkerEdgeColor', 'k' );
@@ -256,7 +279,7 @@ legend( 'subject 1 non-target',...
         'subject 1 target'    ,...
         'FontSize'            ,...
         30);
-title('TSNE - one subjects ','FontSize', 30 );
+title('TSNE - with mean sub','FontSize', 30 );
 set(gca,'xtick',[]);
 set(gca,'ytick',[]);
 axis off
@@ -264,23 +287,25 @@ axis off
 
 %% show TSNE of two sessions
 % -get events 1 
-subject1 = 16;
+subject1 = 15;
 sess1    = 1;
-subject2 = 18;
+subject2 = 16;
 sess2    = 1;
 
 epsilon = 0.01;
 max_iter = 100;
 
 [Events1, vClass1]  = getERPEvents(subject1, sess1);
-Events1             = addDiffrenceAverage(Events1, vClass1);
-cov1 = covFromCellArrayOfEvents(Events1);
-mean_of_cov1 = riemannianMean(cov1, epsilon, max_iter);
-
-
 % -get events 2
 [Events2, vClass2]  = getERPEvents(subject2, sess2);
-Events2             = addDiffrenceAverage(Events2, vClass2);
+Events2             = addPCAAverage(Events2);
+% [~, Events2]         = addPCAAverageOldDataTest(Events1, Events2);
+
+Events1             = addPCAAverage(Events1);
+cov1                = covFromCellArrayOfEvents(Events1);
+mean_of_cov1        = riemannianMean(cov1, epsilon, max_iter);
+
+
 
 cov2 = covFromCellArrayOfEvents(Events2);
 mean_of_cov2 = riemannianMean(cov2, epsilon, max_iter);
@@ -292,7 +317,7 @@ mean_of_cov2 = riemannianMean(cov2, epsilon, max_iter);
 %     Events1_transformed{ii} = (T * Events1{ii}')';
 % end
 
-cov_transformed = covFromCellArrayOfEvents(Events1_transformed);
+% cov_transformed = covFromCellArrayOfEvents(Events1_transformed);
 
 
 % before
@@ -318,8 +343,8 @@ legend( 'subject 1 non-target',...
         'subject 2 non-target',...
         'subject 2 target'    ,...
         'FontSize'            ,...
-        36);
-title('TSNE - Two subjects','FontSize', 36 );
+        25);
+title('TSNE - Two subjects their PCA','FontSize', 36 );
 set(gca,'xtick',[]);
 set(gca,'ytick',[]);
 axis off
@@ -339,8 +364,42 @@ axis off
 %                 scatter( tsne_points(vClass_one ~= 1, 1), tsne_points(vClass_one ~= 1, 2), 30, 'b', 'filled', 'MarkerEdgeColor', 'k' );
 
 
+%% show shannels with average
+subject1 = 15;
+sess1    = 1;
 
+[Events, vClass]  = getERPEvents(subject1, sess1);
 
+NUM = 4;
+Events = addAverage(Events, vClass);
+data = Events{1};
+figure();
+
+for ii = 1:NUM
+    subplot(2*NUM, 1, ii);
+    plot(data(:,ii), 'b');
+    hold on;
+    set(gca,'xtick',[]);
+    set(gca,'ytick',[]);
+    xlim([1 513]);
+    if ii == 1
+        title('Channels with mean', 'FontSize',32);
+    end
+%     axis off
+end
+for ii = 1:NUM
+    subplot(2*NUM, 1, ii+NUM);
+    plot(data(:,ii+16), 'r');
+    set(gca,'xtick',[]);
+    set(gca,'ytick',[]);
+    xlim([1 513]);
+%     if ii == 1
+%         title('ERP channels', 'FontSize',25);
+%     end
+%     axis off
+end
+% legend('original', 'average');
+xlabel('time', 'FontSize', 30);
 %% PCA
 subject1 = 16;
 sess1    = 1;
