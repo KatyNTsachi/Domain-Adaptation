@@ -12,7 +12,6 @@ for q = 1:length(mat)
     load(dir_path+mat(q).name);
 %     table_to_show()
     if q == 1
-        table_to_show(2:end, 1) = 2;
         data = table_to_show(1, :);
     end
     data = [data; table_to_show(2:end,:)];
@@ -28,8 +27,8 @@ subject2         = data(2:end, 3);
 session2         = data(2:end, 4);
 
 original          = data(2:end, 5);
-with_train_mean   = data(2:end, 6);
-with_real_mean    = data(2:end, 7);
+with_real_mean    = data(2:end, 6);
+with_train_mean   = data(2:end, 7);
 with_PCA          = data(2:end, 8);
 with_sepatate_PCA = data(2:end, 9);
 
@@ -131,7 +130,7 @@ errorbar(    1:num_of_1_subjects                 , all_mean_all_subject(5, :) ,.
              'LineWidth'                         , 3.0);
 
 
-legend('Original', 'With train mean', 'With real mean', 'With PCA', 'With separate PCA',  'FontSize', 20);
+legend('Original', 'With real mean', 'With train mean', 'With PCA', 'With separate PCA',  'FontSize', 20);
 title('Average Precision of ERP between subjects', 'FontSize', 30);
 xlabel('Subject', 'FontSize', 20);
 ylabel('Precision', 'FontSize', 20);
@@ -173,7 +172,7 @@ errorbar(    1:num_of_1_subjects                 , all_mean_all_subject(5, :) ,.
              'LineWidth'                         , 3.0);
 
 
-legend('Original', 'With train mean', 'With real mean', 'With PCA', 'With separate PCA',  'FontSize', 20);
+legend('Original', 'With real mean', 'With train mean', 'With PCA', 'With separate PCA',  'FontSize', 20);
 title('Average Precision of ERP between sessions', 'FontSize', 30);
 xlabel('Subject', 'FontSize', 20);
 ylabel('Precision', 'FontSize', 20);
