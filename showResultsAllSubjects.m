@@ -71,11 +71,13 @@ for data_type = 1:5
     for tmp_subject_num = 1 : length(unique_1_subjects)
         
         %- get relevant idx
-        relevant_idx_all_subject = find( subject1_num == unique_1_subjects(tmp_subject_num)...
-        & subject2_num ~= unique_1_subjects(tmp_subject_num ));
+        relevant_idx_all_subject = find( subject1_num == unique_1_subjects(tmp_subject_num) &...
+                                         subject2_num ~= unique_1_subjects(tmp_subject_num ) ...
+                                        );
     
-        relevant_idx_all_session = find( subject1_num == unique_1_subjects(tmp_subject_num)...
-        & subject2_num == unique_1_subjects(tmp_subject_num));
+        relevant_idx_all_session = find( subject1_num == unique_1_subjects(tmp_subject_num) &...
+                                         subject2_num == unique_1_subjects(tmp_subject_num)  ...
+                                        );
         
         %- get relevant data 
         tmp_data = all_res{data_type};
@@ -86,6 +88,7 @@ for data_type = 1:5
         
         tmp_var_all_session  = var( tmp_data( relevant_idx_all_session ) );
         tmp_mean_all_session = mean( tmp_data( relevant_idx_all_session ) );
+        
         %- update table
         all_var_all_subject( data_type, tmp_subject_num)  = tmp_var_all_subject;
         all_mean_all_subject( data_type, tmp_subject_num) = tmp_mean_all_subject;
