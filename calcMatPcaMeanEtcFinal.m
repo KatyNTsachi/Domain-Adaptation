@@ -22,7 +22,7 @@ table_to_show = [...
              
 for subject1 = 1
     for sess1 = 1:8
-        for subject2 = 1:24
+        for subject2 = [1:12,14:24]
             for sess2 = 1:8
                 
                 if subject2 > 7 & sess2 > 1 
@@ -38,15 +38,15 @@ for subject1 = 1
                 max_iter = 100;
 
                 [Events1, vClass1]  = getERPEvents(subject1, sess1);
-                cov1 = covFromCellArrayOfEvents(Events1);
-                mean_of_cov1 = riemannianMean(cov1, epsilon, max_iter);
+%                 cov1 = covFromCellArrayOfEvents(Events1);
+%                 mean_of_cov1 = riemannianMean(cov1, epsilon, max_iter);
 
 
                 %% get events 2
                 [Events2, vClass2]  = getERPEvents(subject2, sess2);
-                cov2 = covFromCellArrayOfEvents(Events2);
-                mean_of_cov2 = riemannianMean(cov2, epsilon, max_iter);
-
+%                 cov2 = covFromCellArrayOfEvents(Events2);
+%                 mean_of_cov2 = riemannianMean(cov2, epsilon, max_iter);
+                
                 %% transorm events 1 to events 2
 %                 T = ( mean_of_cov2 * ( (mean_of_cov1)^(-1) ) ) ^ (1 / 2);
 %                 Events1_transformed = {};
@@ -126,7 +126,7 @@ for subject1 = 1
                 NUM_OF_RES = 5;
                 precision = zeros(NUM_OF_RES, 1);
                 tmp_idx = 1;
-                [pre1, ~] = calPrecision(...
+                pre1 = calPrecision(...
                                                     c_data_for_classifier{1},...
                                                     c_data_for_classifier{2},...
                                                     vClass1                 ,...
@@ -135,7 +135,7 @@ for subject1 = 1
                 precision(tmp_idx) = precision(tmp_idx) + pre1;
                 tmp_idx = tmp_idx + 1;
 
-                [pre1, ~] = calPrecision(...
+                pre1 = calPrecision(...
                                                     c_data_for_classifier{3},...
                                                     c_data_for_classifier{4},...
                                                     vClass1                 ,...
@@ -145,7 +145,7 @@ for subject1 = 1
                 tmp_idx = tmp_idx + 1;
 
 
-                [pre1, ~] = calPrecision(  ...
+                pre1 = calPrecision(  ...
                                                 c_data_for_classifier{3},...
                                                 c_data_for_classifier{5},...
                                                 vClass1                 ,...
@@ -155,7 +155,7 @@ for subject1 = 1
                 tmp_idx = tmp_idx + 1;
 
              
-                [pre1, ~] = calPrecision(  ...
+                pre1 = calPrecision(  ...
                                                 c_data_for_classifier{6},...
                                                 c_data_for_classifier{7},...
                                                 vClass1                 ,...
@@ -165,7 +165,7 @@ for subject1 = 1
                 tmp_idx = tmp_idx + 1;
 
 
-                [pre1, ~] = calPrecision(  ...
+                pre1 = calPrecision(  ...
                                                 c_data_for_classifier{8},...
                                                 c_data_for_classifier{9},...
                                                 vClass1                 ,...
@@ -177,7 +177,7 @@ for subject1 = 1
                 
                 
                
-convertCharsToStrings(num2str(subject1))
+
 
                 table_to_show = [table_to_show ; 
                                                 [convertCharsToStrings(num2str(subject1))      ,...
@@ -283,32 +283,27 @@ function [] = showPCA(flattened_cov, vClass)
     
 end
 
-function [pre1, pre2] = calPrecision(X, X_test,y, y_test, data_name)
+function [pre1] = calPrecision(X, X_test,y, y_test, data_name)
     
     t             = templateSVM('Standardize', false, 'KernelFunction', 'linear');
     Mdl           = fitcecoc( X', ...
                               y, ...
                               'Learners', t);
-   
-    predicted_label = predict( Mdl, X_test' );
-    
-    % calc precision
-    tp  = sum((y_test == 2) & (predicted_label == 2));
-    fp  = sum((y_test == 1) & (predicted_label == 2));
-    if tp + fp ~= 0 
-        pre1 = tp / (tp + fp);
-    else 
-        pre1 = 0;
+    try
+        predicted_label = predict( Mdl, X_test' );
+        % calc precision
+        tp  = sum((y_test == 2) & (predicted_label == 2));
+        fp  = sum((y_test == 1) & (predicted_label == 2));
+        if tp + fp ~= 0 
+            pre1 = tp / (tp + fp);
+        else 
+            pre1 = 0;
+        end
+
+    catch
+        pre1 = -1;
     end
     
-    %calc recal
-    tn  = sum((y_test == 1) & (predicted_label == 1));
-    fn  = sum((y_test == 2) & (predicted_label == 1));
-    if tn + fn ~= 0 
-        pre2 = tn / (tn + fn);
-    else 
-        pre2 = 0;
-    end
     
         
 end
