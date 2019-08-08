@@ -117,7 +117,7 @@ for subject = subjects
                                                      
          
             % extra
-            Events_test_reference = addDiffrenceAverage(Events_test, Events_test);  
+            Events_test_reference = addDiffrenceAverage(Events_test, vClass_test);  
             
             Events_train_with_seperate_PCA = addPCAAverage(Events_train);   
             Events_test_with_seperate_PCA  = addPCAAverage(Events_test);   
