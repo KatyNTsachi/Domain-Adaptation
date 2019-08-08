@@ -2,7 +2,7 @@ close all
 clear
 addpath("./functions");
 %%
-NUM_OF_DATA = 5;
+NUM_OF_DATA = 7;
 table_to_show = [];
 table_to_show = [table_to_show; [   ...
                                     "subject"                        ,...
@@ -12,7 +12,9 @@ table_to_show = [table_to_show; [   ...
                                     "mean"                           ,...
                                     "two mean"                       ,...                                    
                                     "mean diff"                      ,...                                    
-                                    "PCA mean"                       ,...
+                                    "combined PCA mean"              ,...
+                                    "reference mean"                 ,...
+                                    "seperate PCA mean"              ,...
                                 ]
                 ];
 
@@ -20,15 +22,15 @@ table_to_show = [table_to_show; [   ...
 
 
 %% prepare for calc
-subjects = 1:7;
-session = 1:8;
+subjects = 1:9;
+session = 1:2;
 
 for subject = subjects
     
     for sess = session
 
-%         [Events, vClass]  = getCVEPEvents(subject, sess);
-        [Events, vClass]  = getERPEvents(subject, sess);
+        [Events, vClass]  = getCVEPEvents(subject, sess);
+%         [Events, vClass]  = getERPEvents(subject, sess);
 
         EventsMat         = cell2mat(Events);
 
@@ -37,7 +39,7 @@ for subject = subjects
 
         EventsMat = reshape(EventsMat, n_time, n_channels, [] );
         
-        repetitions = 10;
+        repetitions = 5;
         test_presentage = 0.3;
         
         %% each repetition we permute and take the first part, here we get the indices...
@@ -112,9 +114,14 @@ for subject = subjects
             [Events_train_with_PCA_mean,...
              Events_test_with_PCA_mean] = addPCAAverageTest( Events_train, Events_test);   
                                                                 
-                                                                
+                                                     
+         
+            % extra
+            Events_test_reference = addDiffrenceAverage(Events_test, Events_test);  
+            
+            Events_train_with_seperate_PCA = addPCAAverage(Events_train);   
+            Events_test_with_seperate_PCA  = addPCAAverage(Events_test);   
 
-                                                                                                                               
                                                                                         
             %% doing covariance correlation and partial correlation
             c_data_for_classifier  = {};
@@ -136,6 +143,10 @@ for subject = subjects
                                 "Events test with  mean diff "      + tmp_description,...
                                 "Events train with PCA"             + tmp_description,...
                                 "Events test with PCA"              + tmp_description,...
+                                "Events train with mean diff "      + tmp_description,...
+                                "Events test test mean diff"        + tmp_description,...
+                                "Events train with seperate PCA"    + tmp_description,...
+                                "Events test with seperate PCA"     + tmp_description,...
                               };
 
             events_cell     = { 
@@ -149,9 +160,12 @@ for subject = subjects
                                 Events_test_with_mean_difference        ,...
                                 Events_train_with_PCA_mean              ,...
                                 Events_test_with_PCA_mean               ,...
+                                Events_train_with_mean_difference       ,...
+                                Events_test_reference                   ,...
+                                Events_train_with_seperate_PCA          ,...
+                                Events_test_with_seperate_PCA           ,...
                               };
-
-                          
+               
                           
                           
             %set base functions
@@ -202,7 +216,7 @@ for subject = subjects
     
 end
 
-save pca_results_ERP_dataset table_to_show;
+save CVEP_results table_to_show;
 
 
 
@@ -222,7 +236,7 @@ function [pre] = calPrecision(X, X_test,y, y_test)
     if tp + fp ~= 0 
         pre = tp / (tp + fp);
     else
-       pre = 0;
+       pre = -1;
     end
 end
 
