@@ -31,7 +31,7 @@ all_base_functions = ["linear"];
 
 %extract the features
 [c_data_for_classifier, c_description_for_data] = extractFeatures( events_cell, events_names,...
-                                                                   funcs, funcs_names, vClass );
+                                                                   funcs, funcs_names );
 
  %% show tsne
 showTSNE(  c_data_for_classifier, vClass, c_description_for_data );
@@ -68,9 +68,9 @@ plot(Events{1}(100:350,:))
 x = Events{1};
 x = x - mean(x);
 %-- create permutation matrix
-[length,~] = size(x);
-p = eye(length);
-p = p(randperm(length), :);
+[length_var,~] = size(x);
+p = eye(length_var);
+p = p(randperm(length_var), :);
 %-- create permutation
 permutation = p*x;
 %-- show permutation
@@ -211,7 +211,7 @@ pcolor(wave_cov);
 set(gca,'YDir','reverse' );
 set(hAxes,'YDir','reverse');
 
-%% - first dataset
+%% - first dataset-mean
 day               = 3;
 subject           = 1;
 [Events, vClass]  = getERPEvents( subject, day );
@@ -221,11 +221,11 @@ Events_with_mean = addAverage(Events, vClass);
 m = Events_with_mean{1}(:,17:32);
 f = figure();
 plot( m );
-set(gca,'xtick',[])
-set(gca,'ytick',[])
-title('Average of Non-target', 'FontSize', 32);
+set(gca,'xtick',[], 'FontSize', 40)
+% set(gca,'ytick',[])
+title('Average of target', 'FontSize', 50);
 % title('Average of target', 'FontSize', 32);
-xlabel('time', 'FontSize', 32);
+xlabel('time', 'FontSize', 40);
 xlim ([1 513]);
 
 %% - seccond dataset
@@ -238,12 +238,12 @@ Events_with_mean = addAverage(Events, vClass);
 m = Events_with_mean{1}(:,23:44);
 f = figure();
 plot( m );
-set(gca,'xtick',[])
-set(gca,'ytick',[])
-title('Average of target', 'FontSize', 32);
-% title('Average of Non-target', 'FontSize', 32);
+set(gca,'xtick',[], 'FontSize', 40)
+% set(gca,'ytick',[])
+% title('Average of target', 'FontSize', 50);
+title('Average of Non-target', 'FontSize', 50);
 
-xlabel('time', 'FontSize', 32);
+xlabel('time', 'FontSize', 40);
 xlim ([1 513]);
 
 
@@ -256,7 +256,9 @@ epsilon = 0.01;
 max_iter = 100;
 
 [Events1, vClass1]  = getERPEvents(subject1, sess1);
-Events1             = addDiffrenceAverage(Events1, vClass1);
+% Events1             = addDiffrenceAverage(Events1, vClass1);
+% Events1             = addPCAAverage(Events1);
+
 cov1                = covFromCellArrayOfEvents(Events1);
 % mean_of_cov1 = riemannianMean(cov1, epsilon, max_iter);
 
@@ -271,26 +273,29 @@ vClass_one = vClass1;
 
 
 figure();
-scatter( tsne_points(vClass_one == 1, 1), tsne_points(vClass_one == 1, 2), 250, 'r', 'filled', 'MarkerEdgeColor', 'k' );
+scatter( tsne_points(vClass_one == 1, 1), tsne_points(vClass_one == 1, 2), 500, 'r', 'filled', 'MarkerEdgeColor', 'k' );
 hold on;
-scatter( tsne_points(vClass_one == 2, 1), tsne_points(vClass_one == 2, 2), 250, 'y', 'filled', 'MarkerEdgeColor', 'k' );
+scatter( tsne_points(vClass_one == 2, 1), tsne_points(vClass_one == 2, 2), 500, 'y', 'filled', 'MarkerEdgeColor', 'k' );
 
 legend( 'subject 1 non-target',...
         'subject 1 target'    ,...
         'FontSize'            ,...
-        30);
-title('TSNE - with mean sub','FontSize', 30 );
+        25);
+title('TSNE - one session','FontSize', 30 );
+% title('PCA','FontSize', 30 );
+
 set(gca,'xtick',[]);
+
 set(gca,'ytick',[]);
 axis off
 
 
-%% show TSNE of two sessions
+%% show PCA of two sessions
 % -get events 1 
-subject1 = 15;
+subject1 = 1;
 sess1    = 1;
-subject2 = 16;
-sess2    = 1;
+subject2 = 1;
+sess2    = 2;
 
 epsilon = 0.01;
 max_iter = 100;
@@ -298,10 +303,16 @@ max_iter = 100;
 [Events1, vClass1]  = getERPEvents(subject1, sess1);
 % -get events 2
 [Events2, vClass2]  = getERPEvents(subject2, sess2);
-Events2             = addPCAAverage(Events2);
-% [~, Events2]         = addPCAAverageOldDataTest(Events1, Events2);
+% Events2             = addPCAAverage(Events2);
+[~, Events2]        = addDiffrenceAverageOldDataTest(Events1, Events2, vClass1);
+% Events2             = addDiffrenceAverage(Events2,vClass2);
+% [Events1, Events2]         = addPCAAverageOldDataTest(Events1, Events2);
 
-Events1             = addPCAAverage(Events1);
+
+% [~, Events2]         = addPCAAverageOldDataTest(Events1, Events2);
+% Events1             = addPCAAverage(Events1);
+Events1             = addDiffrenceAverage(Events1, vClass1);
+
 cov1                = covFromCellArrayOfEvents(Events1);
 mean_of_cov1        = riemannianMean(cov1, epsilon, max_iter);
 
@@ -324,27 +335,29 @@ mean_of_cov2 = riemannianMean(cov2, epsilon, max_iter);
 tmp_cov = cat(3, cov1, cov2);
 flattened_cov = prepareForClassification(tmp_cov, false);
 tsne_points = tsne(flattened_cov');
+% tsne_points = pca(flattened_cov, 'NumComponents', 2);
+
 vClass_one = zeros(size(flattened_cov, 2), 1);
 vClass_one = cat(1, vClass1, vClass2 + 2 );
 class_1 = 1;
 class_2 = 2;
 
 figure();
-scatter( tsne_points(vClass_one == 1, 1), tsne_points(vClass_one == 1, 2), 100, 'r', 'filled', 'MarkerEdgeColor', 'k' );
+scatter( tsne_points(vClass_one == 1, 1), tsne_points(vClass_one == 1, 2), 500, 'r', 'filled', 'MarkerEdgeColor', 'k' );
 hold on;
-scatter( tsne_points(vClass_one == 2, 1), tsne_points(vClass_one == 2, 2), 100, 'y', 'filled', 'MarkerEdgeColor', 'k' );
+scatter( tsne_points(vClass_one == 2, 1), tsne_points(vClass_one == 2, 2), 500, 'y', 'filled', 'MarkerEdgeColor', 'k' );
 hold on;
-scatter( tsne_points(vClass_one == 3, 1), tsne_points(vClass_one == 3, 2), 100, 'b', 'filled', 'MarkerEdgeColor', 'k' );
+scatter( tsne_points(vClass_one == 3, 1), tsne_points(vClass_one == 3, 2), 500, 'b', 'filled', 'MarkerEdgeColor', 'k' );
 hold on;
-scatter( tsne_points(vClass_one == 4, 1), tsne_points(vClass_one == 4, 2), 100, 'g', 'filled', 'MarkerEdgeColor', 'k' );
+scatter( tsne_points(vClass_one == 4, 1), tsne_points(vClass_one == 4, 2), 500, 'g', 'filled', 'MarkerEdgeColor', 'k' );
 
 legend( 'subject 1 non-target',...
         'subject 1 target'    ,...
         'subject 2 non-target',...
         'subject 2 target'    ,...
         'FontSize'            ,...
-        25);
-title('TSNE - Two subjects their PCA','FontSize', 36 );
+        20);
+title('TSNE - different sessions train mean','FontSize', 36 );
 set(gca,'xtick',[]);
 set(gca,'ytick',[]);
 axis off
@@ -401,12 +414,13 @@ end
 % legend('original', 'average');
 xlabel('time', 'FontSize', 30);
 %% PCA
-subject1 = 16;
+subject1 = 1;
 sess1    = 1;
 
 [Events, vClass]  = getERPEvents(subject1, sess1);
 
 NUM = 10;
+Events_mean = addAverage(Events, vClass);
 Events = addPCAAverage(Events);
 
 figure();
@@ -420,8 +434,19 @@ end
 xlabel('time', 'FontSize',25);
 
 figure();
-plot(Events{ii}(:,20));
+plot(Events{ii}(:,17));
 xlabel('time', 'FontSize',25);
+xlim([1 513]);
+set(gca,'xtick',[]);
+% set(gca,'ytick',[]);
+
+
+figure();
+plot(Events_mean{ii}(:,17));
+xlabel('time', 'FontSize',25);
+xlim([1 513]);
+set(gca,'xtick',[]);
+
 
 %% - problem with pca
 x1 = randn(700, 1);

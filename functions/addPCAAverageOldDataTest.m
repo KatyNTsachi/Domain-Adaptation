@@ -23,7 +23,7 @@ function [cWithAverage, c_input_test] = addPCAAverageOldDataTest(cInput, c_input
 %         subplot(3,1,3);
 %         plot( mean( squeeze( mat(:, chanel_num,:) ), 2 ) );
         
-        num_of_pca_vectors = 10;
+        num_of_pca_vectors = 1;
         eigen_vectors_to_use = eigen_vectors(:, 1:num_of_pca_vectors);
         average_chanels(:, chanel_num) = mean(eigen_vectors_to_use, 2);
         

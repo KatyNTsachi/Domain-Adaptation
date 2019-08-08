@@ -36,27 +36,33 @@ for subject = subjects
         n_channels = size(Events{1}, 2);
 
         EventsMat = reshape(EventsMat, n_time, n_channels, [] );
-
-        %permute
-        N = size(vClass,1);
-        p = randperm(N);
-        tmp_res = zeros(NUM_OF_DATA, 1);
-        k = 10;
-        test_size = int32(linspace(1, N, k+1 ));
-        for ii = 1:k
-
-            test_start_i = test_size(ii);
-            test_end_i   = test_size(ii + 1);
-
-            if test_start_i == 1
-                p_train = p(test_end_i + 1 : end);
-            elseif  test_end_i == N
-                p_train = p(1 : test_start_i - 1);
-            else 
-                p_train = [p(1 : test_start_i - 1), p(test_end_i + 1 : end)];
-            end
-            p_test  =  p(test_start_i : test_end_i);
-
+        
+        repetitions = 10;
+        test_presentage = 0.3;
+        
+        %% each repetition we permute and take the first part, here we get the indices...
+        % of the first part of the permutation
+        indices_of_positive = find(vClass~=1);
+        indices_of_negative = find(vClass==1);  
+        p_test_end = ceil( test_presentage * length(indices_of_positive) );
+        n_test_end = ceil( test_presentage * length(indices_of_negative) );
+                
+        for ii = 1:repetitions
+            %permute
+            N = size(vClass,1);
+            tmp_res = zeros(NUM_OF_DATA, 1);
+                      
+            % shafel positive and negative
+            p_positive = randperm(length(indices_of_positive));
+            p_negative = randperm(length(indices_of_negative)); 
+            
+            indices_of_positive = indices_of_positive(p_positive);
+            indices_of_negative = indices_of_negative(p_negative);
+            
+            % get indices of train and test
+            p_test           =  [indices_of_positive(1:p_test_end)    ; indices_of_negative(1:n_test_end)    ];
+            p_train          =  [indices_of_positive(p_test_end+1:end); indices_of_negative(n_test_end+1:end)];
+            
             % devide events mat to train and test
             EventsMat_train = EventsMat(:, :, p_train);
             EventsMat_test  = EventsMat(:, :, p_test);

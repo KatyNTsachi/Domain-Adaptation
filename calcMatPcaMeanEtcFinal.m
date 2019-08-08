@@ -30,7 +30,7 @@ for subject1 = 1
                 end
                 
                 if subject1 == subject2 & sess1 == sess2
-                    continue
+                    continue;
                 end
                 
                 %% get events 1 
