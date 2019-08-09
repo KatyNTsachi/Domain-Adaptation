@@ -15,6 +15,7 @@ table_to_show = [table_to_show; [   ...
                                     "combined PCA mean"              ,...
                                     "reference mean"                 ,...
                                     "seperate PCA mean"              ,...
+                                    "PCA test"                       ,...
                                 ]
                 ];
 
@@ -22,15 +23,19 @@ table_to_show = [table_to_show; [   ...
 
 
 %% prepare for calc
-subjects = 1:9;
-session = 1:2;
+subjects = 1:24;
+session = 1:8;
 
 for subject = subjects
     
     for sess = session
-
-        [Events, vClass]  = getCVEPEvents(subject, sess);
-%         [Events, vClass]  = getERPEvents(subject, sess);
+%         tic; 
+        if subject > 7 & sess > 1
+            continue;
+        end
+        
+%         [Events, vClass]  = getCVEPEvents(subject, sess);
+        [Events, vClass]  = getERPEvents(subject, sess);
 
         EventsMat         = cell2mat(Events);
 
@@ -122,6 +127,9 @@ for subject = subjects
             Events_train_with_seperate_PCA = addPCAAverage(Events_train);   
             Events_test_with_seperate_PCA  = addPCAAverage(Events_test);   
 
+            
+            [Events_train_with_PCA_test, Events_test_with_PCA_test] = addPCATest(Events_train, Events_test);   
+
                                                                                         
             %% doing covariance correlation and partial correlation
             c_data_for_classifier  = {};
@@ -149,7 +157,7 @@ for subject = subjects
                                 "Events test with seperate PCA"     + tmp_description,...
                               };
 
-            events_cell     = { 
+            events_cell     = {
                                 Events_train                            ,...
                                 Events_test                             ,...
                                 Events_train_with_mean                  ,...
@@ -208,7 +216,7 @@ for subject = subjects
                                             ]
                             ];
 
-            
+%             time = toc;
             
         end    
    
@@ -216,7 +224,7 @@ for subject = subjects
     
 end
 
-save CVEP_results table_to_show;
+save ERP_results table_to_show;
 
 
 

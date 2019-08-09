@@ -1,9 +1,9 @@
-function [cWithAverage1, cWithAverage2] = addPCAAverageTest(cInput1, cInput2)
+function [cWithAverage1, cWithAverage2] = addPCATest(cInput1, cInput2)
     %ADDAVERAGE Summary of this function goes here
     %   Detailed explanation goes here
     
     %calc mean of vClass == 1
-    all_cInput = {cInput1{:}, cInput2{:}};
+    all_cInput = {cInput1{:}};
     mat = cat(3, all_cInput{:});
     
     average_chanels = nan( size(mat, 1), size(mat, 2) );
