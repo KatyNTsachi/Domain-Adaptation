@@ -2,7 +2,7 @@ close all
 clear
 addpath("./functions");
 %%
-NUM_OF_DATA   = 8;
+NUM_OF_DATA   = 8; 
 table_to_show = [];
 table_to_show = [table_to_show; [   ...
                                     "subject"                        ,...
@@ -17,14 +17,15 @@ table_to_show = [table_to_show; [   ...
                                     "seperate PCA mean"              ,...
                                     "PCA test"                       ,...
                                 ]
+                                
                 ];
 
 %%
 
 
 %% prepare for calc
-subjects = 1:24;
-session = 1:8;
+subjects = 1:1;
+session = 1:1;
 
 for subject = subjects
     
@@ -228,7 +229,7 @@ for subject = subjects
     
 end
 
-save ERP_results table_to_show;
+save ERP_results_ALL table_to_show;
 
 
 

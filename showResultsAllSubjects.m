@@ -4,8 +4,12 @@ clc;
 addpath("./functions");
 
 %% - load data
-% results_path = "./results/pca_results_CVRP_dataset.mat";
-dir_path = "./results/all_subjects/";
+
+% dir_path = "./results/ERP/multiple sessions/";
+dir_path = "./results/CVEP/multiple sessions/";
+
+
+
 mat = dir(dir_path + "*.mat");
 data = [];
 for q = 1:length(mat)
@@ -27,13 +31,11 @@ subject2         = data(2:end, 3);
 session2         = data(2:end, 4);
 
 original          = data(2:end, 5);
-with_real_mean    = data(2:end, 6);
+oracle            = data(2:end, 6);
 with_train_mean   = data(2:end, 7);
-with_PCA          = data(2:end, 8);
-with_sepatate_PCA = data(2:end, 9);
+with_sepatate_PCA = data(2:end, 8);
+with_train_PCA    = data(2:end, 9);
 
-T = table( subject1, session1, subject2, session2, original, with_train_mean, with_real_mean, with_PCA, with_sepatate_PCA);
-% disp(T);
 
 %% -show on graph
 
@@ -43,31 +45,28 @@ subject2_num        = str2num( char(subject2) );
 session2_num        = str2num( char(session2) );
 
 original_num          = str2num( char(original) );
-with_real_mean_num    = str2num( char(with_real_mean) );
+oracle_num            = str2num( char(oracle) );
 with_train_mean_num   = str2num( char(with_train_mean) );
-with_PCA_num          = str2num( char(with_PCA) );
+with_train_PCA_num    = str2num( char(with_train_PCA) );
 with_sepatate_PCA_num = str2num( char(with_sepatate_PCA) );
 
 %- arrange 
 all_res    = {};
 all_res{1} = original_num;
-all_res{2} = with_real_mean_num;
+all_res{2} = oracle_num;
 all_res{3} = with_train_mean_num;
-all_res{4} = with_PCA_num;
-all_res{5} = with_sepatate_PCA_num;
+all_res{4} = with_sepatate_PCA_num;
+all_res{5} = with_train_PCA_num;
 
-%% -calc var
+%% -calc var subjects
 num_of_1_subjects = size( unique( subject1_num ), 1 );
 
-all_var_all_subject  = zeros( 5, num_of_1_subjects);
-all_mean_all_subject = zeros( 5, num_of_1_subjects);
 
-all_var_all_session  = zeros( 5, num_of_1_subjects);
-all_mean_all_session = zeros( 5, num_of_1_subjects);
+mean_summary  = zeros( 5, 1);
+var_summary = zeros( 5, 1);
 
 unique_1_subjects = unique( subject1_num );
 for data_type = 1:5
-    
     for tmp_subject_num = 1 : length(unique_1_subjects)
         
         %- get relevant idx
@@ -96,21 +95,60 @@ for data_type = 1:5
         all_var_all_session( data_type, tmp_subject_num)  = tmp_var_all_session;
         all_mean_all_session( data_type, tmp_subject_num) = tmp_mean_all_session;
     end
-    
 end
+%% -calc for legende
+num_of_1_subjects = size( unique( subject1_num ), 1 );
 
+
+mean_summary  = zeros( 5, 1);
+var_summary = zeros( 5, 1);
+
+unique_1_subjects = unique( subject1_num );
+for data_type = 1:5
+    relevant_idx_summery = [];
+    for tmp_subject_num = 1 : length(unique_1_subjects)
+        
+        %- get relevant idx
+        relevant_idx_all_subject = find( subject1_num == unique_1_subjects(tmp_subject_num) &...
+                                         subject2_num ~= unique_1_subjects(tmp_subject_num ) ...
+                                        );
+        relevant_idx_summery = [relevant_idx_summery; relevant_idx_all_subject];
+    
+        relevant_idx_all_session = find( subject1_num == unique_1_subjects(tmp_subject_num) &...
+                                         subject2_num == unique_1_subjects(tmp_subject_num)  ...
+                                        );
+        
+        %- get relevant data 
+        tmp_data = all_res{data_type};
+        
+        %- calc var
+        tmp_var_all_subject  = var( tmp_data( relevant_idx_all_subject ) );
+        tmp_mean_all_subject = mean( tmp_data( relevant_idx_all_subject ) );
+        
+        tmp_var_all_session  = var( tmp_data( relevant_idx_all_session ) );
+        tmp_mean_all_session = mean( tmp_data( relevant_idx_all_session ) );
+        
+        %- update table
+        all_var_all_subject( data_type, tmp_subject_num)  = tmp_var_all_subject;
+        all_mean_all_subject( data_type, tmp_subject_num) = tmp_mean_all_subject;
+        
+        all_var_all_session( data_type, tmp_subject_num)  = tmp_var_all_session;
+        all_mean_all_session( data_type, tmp_subject_num) = tmp_mean_all_session;
+    end
+    var_summary(data_type) = sqrt( var( tmp_data( relevant_idx_summery ) ) );
+    mean_summary(data_type)= mean( tmp_data( relevant_idx_summery ) );
+
+end
 %% all subject
-% all_res{1} = original_num;
-% all_res{2} = with_real_mean_num;
-% all_res{3} = with_train_mean_num;
-% all_res{4} = with_PCA_num;
-% all_res{5} = with_sepatate_PCA_num;
 
 colormap jet;
 cmap=colormap;
-tmp_colors = [cmap(10,:);cmap(20,:);cmap(33,:);cmap(45,:);cmap(50,:)];
+tmp_colors = [cmap(10,:);...
+              cmap(20,:);...
+              cmap(33,:);...
+              cmap(55,:);...
+              cmap(63,:)];
 
-figure();
 errorbar(   1:num_of_1_subjects                 , all_mean_all_subject(1, :)   ,...
             all_var_all_subject(1, :)           , -all_var_all_subject(1, :)   ,...
             'MarkerEdgeColor'                   , 'k'                          ,...
@@ -126,7 +164,7 @@ hold on;
 errorbar(   1:num_of_1_subjects                 , all_mean_all_subject(3, :)   ,...
             all_var_all_subject(3, :)           , -all_var_all_subject(3, :)   ,...
             'MarkerEdgeColor'                   , 'k'                          ,...
-            'LineWidth'                         , 12.0                          ,...
+            'LineWidth'                         , 3.0                          ,...
             'Color'                             , tmp_colors(3, :));
 hold on;
 errorbar(   1:num_of_1_subjects                 , all_mean_all_subject(4, :)   ,...
@@ -142,23 +180,68 @@ errorbar(    1:num_of_1_subjects                 , all_mean_all_subject(5, :) ,.
             'Color'                             , tmp_colors(5, :));
 
 
-legend('Original', 'With real mean', 'With train mean', 'With PCA', 'With separate PCA',  'FontSize', 15);
-% legend('Original', 'With real mean', 'With train mean', 'FontSize', 15);
+legend( "Original                     (" + num2str(mean_summary(1), '%1.2f') + ", " + num2str(var_summary(1), '%1.2f') + ")",...
+        "Oracle                       (" + num2str(mean_summary(2), '%1.2f') + ", " + num2str(var_summary(2), '%1.2f') + ")",...
+        "train sub mean          (" + num2str(mean_summary(3), '%1.2f') + ", " + num2str(var_summary(3), '%1.2f') + ")",...
+        "seperate PCA           (" + num2str(mean_summary(4), '%1.2f') + ", " + num2str(var_summary(4), '%1.2f') + ")",...
+        "train PCA                  (" + num2str(mean_summary(5), '%1.2f') + ", " + num2str(var_summary(5), '%1.2f') + ")",...
+        'FontSize', 20);
+    
 
 title('Average Precision of ERP different subjects', 'FontSize', 30);
 
 xlabel('Subject', 'FontSize', 20);
 ylabel('Precision', 'FontSize', 20);
+set(gca, 'FontSize', 20);   
+grid on;
 
 
+%% -calc for legende
+num_of_1_subjects = size( unique( subject1_num ), 1 );
 
+
+mean_summary  = zeros( 5, 1);
+var_summary = zeros( 5, 1);
+
+unique_1_subjects = unique( subject1_num );
+for data_type = 1:5
+    relevant_idx_summery = [];
+    for tmp_subject_num = 1 : length(unique_1_subjects)
+        
+        %- get relevant idx
+        relevant_idx_all_subject = find( subject1_num == unique_1_subjects(tmp_subject_num) &...
+                                         subject2_num ~= unique_1_subjects(tmp_subject_num ) ...
+                                        );
+        
+    
+        relevant_idx_all_session = find( subject1_num == unique_1_subjects(tmp_subject_num) &...
+                                         subject2_num == unique_1_subjects(tmp_subject_num)  ...
+                                        );
+        relevant_idx_summery = [relevant_idx_summery; relevant_idx_all_session];
+        
+        %- get relevant data 
+        tmp_data = all_res{data_type};
+        
+        %- calc var
+        tmp_var_all_subject  = var( tmp_data( relevant_idx_all_subject ) );
+        tmp_mean_all_subject = mean( tmp_data( relevant_idx_all_subject ) );
+        
+        tmp_var_all_session  = var( tmp_data( relevant_idx_all_session ) );
+        tmp_mean_all_session = mean( tmp_data( relevant_idx_all_session ) );
+        
+        %- update table
+        all_var_all_subject( data_type, tmp_subject_num)  = tmp_var_all_subject;
+        all_mean_all_subject( data_type, tmp_subject_num) = tmp_mean_all_subject;
+        
+        all_var_all_session( data_type, tmp_subject_num)  = tmp_var_all_session;
+        all_mean_all_session( data_type, tmp_subject_num) = tmp_mean_all_session;
+    end
+    var_summary(data_type) = sqrt(var( tmp_data( relevant_idx_summery ) ));
+    mean_summary(data_type)= mean( tmp_data( relevant_idx_summery ) );
+
+end
 
 %% all sessions
-% all_res{1} = original_num;
-% all_res{2} = with_real_mean_num;
-% all_res{3} = with_train_mean_num;
-% all_res{4} = with_PCA_num;
-% all_res{5} = with_sepatate_PCA_num;
 
 figure();
 errorbar(   1:num_of_1_subjects                 , all_mean_all_session(1, :)   ,...
@@ -176,7 +259,7 @@ hold on;
 errorbar(   1:num_of_1_subjects                 , all_mean_all_session(3, :)   ,...
             all_var_all_session(3, :)           , -all_var_all_session(3, :)   ,...
             'MarkerEdgeColor'                   , 'k'                          ,...
-            'LineWidth'                         , 12.0                          ,...
+            'LineWidth'                         , 3.0                          ,...
             'Color'                             , tmp_colors(3, :));
 hold on;
 errorbar(   1:num_of_1_subjects                 , all_mean_all_session(4, :)   ,...
@@ -192,13 +275,20 @@ errorbar(    1:num_of_1_subjects                 , all_mean_all_session(5, :) ,.
              'Color'                             , tmp_colors(5, :));
 
 
-legend('Original', 'With real mean', 'With train mean', 'With PCA', 'With separate PCA',  'FontSize', 15);
-% legend('Original', 'With real mean', 'With train mean', 'FontSize', 15);
+legend( "Original                     (" + num2str(mean_summary(1), '%1.2f') + ", " + num2str(var_summary(1), '%1.2f') + ")",...
+        "Oracle                       (" + num2str(mean_summary(2), '%1.2f') + ", " + num2str(var_summary(2), '%1.2f') + ")",...
+        "train sub mean          (" + num2str(mean_summary(3), '%1.2f') + ", " + num2str(var_summary(3), '%1.2f') + ")",...
+        "seperate PCA           (" + num2str(mean_summary(4), '%1.2f') + ", " + num2str(var_summary(4), '%1.2f') + ")",...
+        "train PCA                  (" + num2str(mean_summary(5), '%1.2f') + ", " + num2str(var_summary(5), '%1.2f') + ")",...
+        'FontSize', 20);
+    
+
 
 title('Average Precision of ERP different sessions', 'FontSize', 30);
-
 xlabel('Subject', 'FontSize', 20);
 ylabel('Precision', 'FontSize', 20);
+set(gca, 'FontSize', 20);   
+grid on;
 
 
 

@@ -25,28 +25,29 @@ c_data_for_classifier_with_wavelets = covWIthConstFeatures( Events );
 % colorbar;
 % title('Cov with Wavelets');
 %% - show waves
-% num_chanels_to_show = 5;
-% colormap jet;
-% cmap=colormap;
-% tmp_cmap = [cmap(10,:);cmap(20,:);cmap(60,:);cmap(45,:);cmap(50,:)];
-% %tmp_cmap= cmap;
-% 
-% idx=[1,2,28,25,26];
-% 
-% tmp_ii = 1; 
-% for ii = idx
-%     %tmp_color = mod(ii*10,64);
-%     Plot_color=tmp_cmap(mod(tmp_ii,5) + 1,:);   
-%     subplot(num_chanels_to_show,1,tmp_ii);
-%     plot(c_data_for_classifier_with_wavelets{1}(:,ii), 'Color', Plot_color,'LineWidth',2);
-%     set(gca,'xtick',[])
-%     set(gca,'ytick',[])
-%     if tmp_ii == num_chanels_to_show
-%         xlabel('time', 'FontSize',44);
-%     end
-%     tmp_ii = tmp_ii + 1;
-% end
+num_chanels_to_show = 5;
+colormap jet;
+cmap=colormap;
+tmp_cmap = [cmap(10,:);cmap(20,:);cmap(60,:);cmap(45,:);cmap(50,:)];
+%tmp_cmap= cmap;
 
+idx=[1,2,28,25,26];
+
+tmp_ii = 1; 
+for ii = idx
+    %tmp_color = mod(ii*10,64);
+    Plot_color=tmp_cmap(mod(tmp_ii,5) + 1,:);   
+    subplot(num_chanels_to_show,1,tmp_ii);
+    plot(c_data_for_classifier_with_wavelets{1}(:,ii), 'Color', Plot_color,'LineWidth',3);
+    set(gca,'xtick',[])
+    set(gca,'ytick',[])
+    if tmp_ii == num_chanels_to_show
+        xlabel('time', 'FontSize',44);
+    end
+    xlim([0 750]);
+
+    tmp_ii = tmp_ii + 1;
+end
 
 
 %% doing covariance correlation and partial correlation

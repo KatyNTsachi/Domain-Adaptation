@@ -1,5 +1,5 @@
-close all;
-clear;
+% close all;
+% clear;
 clc;
 addpath("./functions");
 
@@ -7,7 +7,12 @@ addpath("./functions");
 
 %% - load data multiple files
 % results_path = "./results/pca_results_CVRP_dataset.mat";
-dir_path = "./results/erp/onefile/";
+% dir_path = "./results/ERP/one session/";
+% num_of_subjects = 24;
+
+dir_path = "./results/CVEP/one session/";
+num_of_subjects = 9;
+
 mat = dir(dir_path + "*.mat");
 data = [];
 for q = 1:length(mat)
@@ -20,7 +25,7 @@ for q = 1:length(mat)
     clearvars table_to_show;
 end
 
-
+%4,5,6,7,9,10,11
 
 %% - put in table
 subject            = data(2:end, 1);
@@ -30,9 +35,12 @@ original_data      = data(2:end, 4);
 mean_data          = data(2:end, 5);
 two_mean_data      = data(2:end, 6);
 mean_diff_data     = data(2:end, 7);
-pca_data           = data(2:end, 8);
 mean_data_oracel   = data(2:end, 9);
 seperate_pca_data  = data(2:end, 10);
+train_pca          = data(2:end, 11);
+
+
+
 
 % T = table( subject, session, validation, original_data, mean_data, two_mean_data, mean_diff_data, pca_data);
 % disp(T);
@@ -46,29 +54,33 @@ original_data_num     = str2num( char(original_data) );
 mean_data_num         = str2num( char(mean_data) );
 two_mean_data_num     = str2num( char(two_mean_data) );
 mean_diff_data_num    = str2num( char(mean_diff_data) );
-pca_data_num          = str2num( char(pca_data) );
 mean_data_oracel_num  = str2num( char(mean_data_oracel) );
 seperate_pca_data_num = str2num( char(seperate_pca_data) );
+train_pca_num         = str2num( char(train_pca) );
 
 
-%- arrange 
+
+%- arrange  1,2,3,6,7
 all_res    = {};
-all_res{1} = original_data_num;
-all_res{2} = mean_data_num;
-all_res{3} = two_mean_data_num;
-all_res{4} = mean_diff_data_num;
-all_res{5} = pca_data_num;
-all_res{6} = mean_data_oracel_num;
-all_res{7} = seperate_pca_data_num;
+all_res{1} = original_data_num; 
+all_res{2} = mean_data_oracel_num; 
+all_res{3} = mean_diff_data_num; 
+all_res{4} = seperate_pca_data_num; 
+all_res{5} = train_pca_num;           
+
+all_res{6} = mean_data_num;
+all_res{7} = two_mean_data_num;
+
+
 
 %% -calc var
 num_of_subjects = size( unique( subject_num ), 1 );
 
-all_var  = zeros( 7, num_of_subjects);
-all_mean = zeros( 7, num_of_subjects);
+all_var  = zeros( 8, num_of_subjects);
+all_mean = zeros( 8, num_of_subjects);
 
 unique_subjects = unique( subject_num );
-for data_type = 1:7
+for data_type = 1:length(all_res)
     
     for tmp_subject_num = 1 : length(unique_subjects)
         
@@ -94,24 +106,54 @@ for data_type = 1:7
     end
     
 end
+%% -calc var
+num_of_subjects = size( unique( subject_num ), 1 );
 
+var_summary  = zeros( 8, 1);
+mean_summary = zeros( 8, 1);
+
+
+for data_type = 1:length(all_res)
+            
+        %- get televant data 
+        tmp_data = all_res{data_type};
+
+        %- calc var
+        all_result      = tmp_data;
+        real_result_idx = find(all_result ~= -1);
+        real_result     = all_result(real_result_idx);
+        if size(real_result, 1) == 0 
+            real_result = nan;
+        end
+        tmp_var  = var( real_result );
+        tmp_mean = mean( real_result );
+        
+        %- update table
+        var_summary( data_type, 1)  = sqrt(tmp_var);
+        mean_summary( data_type, 1) = tmp_mean;
+    
+end
+
+disp([mean_summary, var_summary]);
 %%
 
-% all_res{1} = original_data_num;
-% all_res{2} = mean_data_num;
-% all_res{3} = two_mean_data_num;
-% all_res{4} = mean_diff_data_num;
-% all_res{5} = pca_data_num;
-% all_res{6} = reference_num;
 
 colormap jet;
 cmap=colormap;
-tmp_colors = [cmap(10,:);cmap(1,:);cmap(60,:);cmap(33,:);cmap(45,:);cmap(20,:);cmap(12,:);cmap(11,:)];
+tmp_colors = [cmap(10,:);...
+              cmap(20,:);...
+              cmap(33,:);...
+              cmap(55,:);...
+              cmap(63,:);...
+              cmap(43,:);...
+              cmap(60,:);...
+              cmap(45,:)];
+          
 
-all_mean = all_mean(:, 1:24);
-all_var  = all_var(:, 1:24);
-num_of_subjects = 24;
+all_mean = all_mean(:, 1:num_of_subjects);
+all_var  = all_var(:, 1:num_of_subjects);
 figure();
+
 errorbar(   1:num_of_subjects                   , all_mean(1, :)   ,...
             all_var(1, :)                       , -all_var(1, :)   ,...
             'MarkerEdgeColor'                   , 'k'              ,...
@@ -154,14 +196,23 @@ errorbar(   1:num_of_subjects                   , all_mean(7, :)   ,...
             'LineWidth'                         , 3.0              ,...
              'Color'                            , tmp_colors(7, :));
 
-% legend('Original', 'With train mean', 'With two train mean', 'With train sub mean', 'With combined PCA', 'Reference results', 'FontSize', 20);
-legend('Original', 'With train mean', 'With two train mean', 'With train sub mean', 'With combined PCA','Oracel', 'With seperate PCA', 'FontSize', 20);
+legend( "Original                     (" + num2str(mean_summary(1), '%1.2f') + ", " + num2str(var_summary(1), '%1.2f') + ")",...
+        "Oracle                       (" + num2str(mean_summary(2), '%1.2f') + ", " + num2str(var_summary(2), '%1.2f') + ")",...
+        "Train sub mean        (" +  num2str(mean_summary(3), '%1.2f') + ", " + num2str(var_summary(3), '%1.2f') + ")",...
+        "Seperate PCA          (" + num2str(mean_summary(4), '%1.2f') + ", " + num2str(var_summary(4), '%1.2f') + ")",...
+        "Train PCA                (" + num2str(mean_summary(5), '%1.2f') + ", " + num2str(var_summary(5), '%1.2f') + ")",...
+        "Mean                        (" + num2str(mean_summary(5), '%1.2f') + ", " + num2str(var_summary(5), '%1.2f') + ")",...
+        "Two means              (" + num2str(mean_summary(5), '%1.2f') + ", " + num2str(var_summary(5), '%1.2f') + ")",...
+        'FontSize', 20);
 
+    
+set(gca, 'FontSize', 20);   
+grid on;
 title('Precision of ERP', 'FontSize', 30);
-
 
 xlabel('Subject', 'FontSize', 20);
 ylabel('Precision', 'FontSize', 20);
+
 
 
 

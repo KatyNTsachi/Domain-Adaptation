@@ -105,7 +105,7 @@ figure()
 colormap(jet);
 hImg = pcolor(cov);
 set(gca,'YDir','reverse' );
-set(hAxes,'YDir','reverse')
+% set(hAxes,'YDir','reverse')
 colorbar;
 %imshow(cov,[])
 
@@ -209,7 +209,7 @@ colormap(jet);
 
 pcolor(wave_cov);
 set(gca,'YDir','reverse' );
-set(hAxes,'YDir','reverse');
+% set(hAxes,'YDir','reverse');
 
 %% - first dataset-mean
 day               = 3;
@@ -221,29 +221,31 @@ Events_with_mean = addAverage(Events, vClass);
 m = Events_with_mean{1}(:,17:32);
 f = figure();
 plot( m );
-set(gca,'xtick',[], 'FontSize', 40)
+set(gca,'xtick',[], 'FontSize', 15)
 % set(gca,'ytick',[])
-title('Average of target', 'FontSize', 50);
+% title('Average of target', 'FontSize', 50);
 % title('Average of target', 'FontSize', 32);
-xlabel('time', 'FontSize', 40);
+% xlabel('time', 'FontSize', 40);
 xlim ([1 513]);
+ylim ([-6e-5 6e-5]);
+
 
 %% - seccond dataset
 day               = 1;
 subject           = 8;
 [Events, vClass]  = GetEvents( subject, day );
-% [Events, vClass] = getERPEvents(subject, sess);
+% % [Events, vClass] = getERPEvents(subject, sess);
 
 Events_with_mean = addAverage(Events, vClass);
 m = Events_with_mean{1}(:,23:44);
 f = figure();
 plot( m );
-set(gca,'xtick',[], 'FontSize', 40)
+set(gca,'xtick',[], 'FontSize', 15)
 % set(gca,'ytick',[])
 % title('Average of target', 'FontSize', 50);
-title('Average of Non-target', 'FontSize', 50);
+% title('Average of Non-target', 'FontSize', 50);
 
-xlabel('time', 'FontSize', 40);
+% xlabel('time', 'FontSize', 40);
 xlim ([1 513]);
 
 
@@ -304,14 +306,16 @@ max_iter = 100;
 % -get events 2
 [Events2, vClass2]  = getERPEvents(subject2, sess2);
 % Events2             = addPCAAverage(Events2);
-[~, Events2]        = addDiffrenceAverageOldDataTest(Events1, Events2, vClass1);
+% [~, Events2]        = addDiffrenceAverageOldDataTest(Events1, Events2, vClass1);
 % Events2             = addDiffrenceAverage(Events2,vClass2);
+Events2             = addPCAAverage(Events2);
 % [Events1, Events2]         = addPCAAverageOldDataTest(Events1, Events2);
 
 
 % [~, Events2]         = addPCAAverageOldDataTest(Events1, Events2);
 % Events1             = addPCAAverage(Events1);
-Events1             = addDiffrenceAverage(Events1, vClass1);
+% Events1             = addDiffrenceAverage(Events1, vClass1);
+Events1             = addPCAAverage(Events1);
 
 cov1                = covFromCellArrayOfEvents(Events1);
 mean_of_cov1        = riemannianMean(cov1, epsilon, max_iter);
@@ -357,7 +361,7 @@ legend( 'subject 1 non-target',...
         'subject 2 target'    ,...
         'FontSize'            ,...
         20);
-title('TSNE - different sessions train mean','FontSize', 36 );
+title('TSNE - different sessions PCA','FontSize', 36 );
 set(gca,'xtick',[]);
 set(gca,'ytick',[]);
 axis off
@@ -377,7 +381,7 @@ axis off
 %                 scatter( tsne_points(vClass_one ~= 1, 1), tsne_points(vClass_one ~= 1, 2), 30, 'b', 'filled', 'MarkerEdgeColor', 'k' );
 
 
-%% show shannels with average
+%% show channels with average
 subject1 = 15;
 sess1    = 1;
 
